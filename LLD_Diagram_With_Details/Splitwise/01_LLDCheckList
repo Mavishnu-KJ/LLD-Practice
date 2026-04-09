@@ -1,0 +1,110 @@
+A. PROBLEM STATEMENT :
+
+Design a Low-Level Design for Splitwise – an expense sharing application.
+
+Requirements:
+
+Users can create an account.
+Users can create a group and add other users as members.
+Users can add expenses within a group.
+Support equal split (most common use case). Other splits (exact, percent) can be extension.
+The system should automatically calculate who owes whom and maintain a simplified balance.
+Users should be able to view overall balances or balance of a specific user.
+Users should be able to "Settle Up" with another user (clear the debt).
+The design should be clean, extensible.
+
+Constraints:
+
+In-memory implementation is acceptable for LLD.
+Focus on core functionality (Equal split in groups).
+
+-----------------------------------------------------------------------------------------------------------------
+
+B. HAPPY PATH STORY (SIMPLE REAL LIFE STORY)
+
+=> Jishnu is planning a Goa trip with his friends.
+=> He creates a group called “Goa Trip 2026” and adds Madhan, UK, Karthik, Mukesh and himself as members.
+=> Jishnu pays ₹5000 for hotel booking and adds the expense in the group, split EQUALLY among all 5 members.
+=> Next day, Madhan pays ₹2000 for food and drinks and adds that expense, also split equally.
+Now the app shows:
+=> Jishnu sees that UK owes him ₹600, Madhan owes him ₹400, etc.
+=> UK can see he owes Jishnu ₹600.
+=> Finally, UK clicks “Settle Up” with Jishnu and clears his debt of ₹600.
+=> This flow covers user creation, group creation, adding expenses, viewing balances, and settling up.
+
+C. 6 MANDATORY STEPS FOR LLD DESIGN
+
+1. Clarify Requirements
+
+=> Functional: User registration, group creation, add members, add expense (Equal split), view balances, settle up.
+=> Non-Functional: Fast balance lookup and updates.
+=> Assumptions: Single currency, Equal split is primary, no expense edit/delete.
+=> Edge Cases: Zero/negative amount, user not in group, no balance to settle.
+
+2. Identify entities and relationships
+
+=> Entities: User, Group, Expense, SplitwiseService
+=> Relationships :
+Group has many Users (composition)
+Expense belongs to one User (paidBy) and one Group
+SplitwiseService maintains simplified balance map between users
+
+3. Design classes and method signatures
+Refer puml file
+
+4. Draw class diagram
+Generate LLD diagram (svg format is best) from puml code
+
+5. Explain the design verbally
+
+6. Discuss Trade-offs and alternatives
+
+=> Used nested HashMap for balances → O(1) lookup, simplified debts.
+=> Chose composition (Group contains Users) over inheritance.
+=> Equal split implemented first; Strategy pattern can be added for other split types.
+=> In-memory for LLD; in production we would use a database + cache.
+
+D. COMPLETE CODE IMPLEMENTATION
+
+Refer java code for this LLD
+
+E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWERS (WITH ANSWERS)
+
+Q1. Why did you choose nested Map for balances?
+
+=> It allows O(1) time lookup for any pair of users.
+=> It also automatically keeps the balance simplified (net owed amount) instead of storing every individual split.
+
+Q2. How would you support Exact or Percent split?
+
+=> I would introduce the Strategy design pattern with an interface SplitStrategy and concrete classes
+like EqualSplitStrategy, ExactSplitStrategy, etc. Then inject the strategy while adding expense.
+
+Q3. Is this design thread-safe?
+=> No, currently it is not.
+=> For production, I would use ConcurrentHashMap and synchronize the addDebt() method
+or use locks while updating balances.
+
+Q4. What if two users owe each other?
+=> In a real system, we can simplify by keeping only net amount
+(e.g., if Jishnu owes Madhan 400 and Madhan owes Jishnu 1000, then we keep Madhan owes Jishnu 600).
+
+Q5. How would you persist this data?
+I would use a relational database like PostgreSQL. User, Group, GroupMember, Expense, and a Balance table (or graph for debts).
+Redis can be used for caching hot balances.
+
+Q6. Can this handle users belonging to multiple groups?
+Yes, because balances are maintained at the user level, not group level.
+This matches how real Splitwise works.
+
+
+
+
+
+
+
+
+
+
+
+

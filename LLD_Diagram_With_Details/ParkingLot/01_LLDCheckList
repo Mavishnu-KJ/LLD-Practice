@@ -1,0 +1,72 @@
+Problem :
+Design a Parking Lot system that supports multiple floors,
+different vehicle types (Car, Bike, Truck),
+parking/unparking, payment, and checking available spots.
+
+01. Clarify Requirements
+
+How many floors? (assume multiple)
+Vehicle types? (Car, Bike, Truck with different spot sizes)
+Payment? (simple time-based or fixed?)
+Multiple entry/exit gates? (yes)
+Concurrency? (multiple vehicles parking at same time?)
+Analytics? (not needed for basic LLD)
+
+02. Identify Main entities (Main classes)
+
+ParkingLot - Main Service class
+Floor
+Vehicle
+Ticket
+Payment
+VehicleType (enum)
+PaymentStatus (enum)
+
+03. Create classes with method signatures / puml coding
+
+04. Generate/Draw the diagram
+
+05. Explain the LLD
+
+This is my Parking Lot design.
+ParkingLot is the main class and has many Floors (composition).
+Each Floor contains many ParkingSpots.
+ParkingSpot knows its type (Car, Bike, Truck) and whether it's occupied.
+Vehicle has license plate and type.
+Ticket links a Vehicle to a ParkingSpot with entry time.
+Payment is linked to a Ticket with amount and status.Main operations:
+parkVehicle: Find available spot of matching type → create Ticket → mark spot occupied.
+exitVehicle: Use ticketId to find spot → calculate time → create Payment → free the spot.
+
+06. Explain Trade-offs
+
+Used composition (ParkingLot has Floors) instead of inheritance because floors are parts of the lot.
+Used enums for VehicleType to avoid magic strings.
+For scalability, I could add multiple entry gates later by adding a Gate class.
+Payment calculation is simple — could be extended to hourly rates.
+
+________________________________________________________________________________________________
+Some possible queries :
+
+Why we did not use Inheritance for Vehicles like Car extends Vehicle, Truck extends Vehicle ?
+
+We used Composition (ParkingSpot has a Vehicle)
+instead of Inheritance (Car extends Vehicle) for the following reasons:
+
+1. "Is-A" vs "Has-A" Relationship
+
+Inheritance (Car extends Vehicle) means:
+Car IS-A Vehicle — This is true in real life.
+
+But in the Parking Lot system, the core relationship is:
+ParkingSpot HAS-A Vehicle (a spot is occupied by a vehicle)
+
+Using inheritance here would be incorrect modeling because:
+
+A ParkingSpot is not a type of Vehicle
+A Vehicle is not a type of ParkingSpot
+
+So we use Composition: ParkingSpot contains (has) a Vehicle.
+
+2. Main Reasons We Avoided Inheritance Here
+Refer LLD_Diagram_With_Details/ParkingLot/WhyCompositionOverInheritanceUsed.jpg

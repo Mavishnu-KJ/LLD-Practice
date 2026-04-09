@@ -1,0 +1,93 @@
+@startuml
+enum lld.splitwise.SplitType {
++  EQUAL
+}
+
+class lld.splitwise.User {
+- String userId
+- String username
+- String email
++ String getUserId()
++ String getUsername()
++ String getEmail()
++ String toString()
+}
+
+
+class lld.splitwise.Expense {
+- String expenseId
+- String description
+- double amount
+- User paidBy
+- Group group
+- SplitType splitType
+- LocalDateTime date
++ double getAmount()
++ User getPaidBy()
++ Group getGroup()
++ SplitType getSplitType()
+}
+
+
+class lld.splitwise.Group {
+- String groupId
+- String groupName
+- List<User> groupMembers
++ String getGroupId()
++ String getGroupName()
++ List<User> getGroupMembers()
++ void addMember(User)
+}
+
+
+class lld.splitwise.SplitwiseService {
+- Map<String,User> userMap
+- Map<String,Group> groupMap
+- List<Expense> expenseList
+- Map<String,Map<String,Double>> balanceSheetMap
+- int userCounter
+- int groupCounter
+- int expenseCounter
++ Group createGroup(String)
++ User addUser(String,String)
++ void addMemberToGroup(String,String)
++ Expense addExpense(String,double,String,String,SplitType)
+- void updateBalanceSheetMap(Expense)
+- void addDebt(String,String,double)
++ void showAllBalances()
++ void showUserBalance(String)
++ void settleUp(String,String)
+}
+
+'Fix overlapping labels
+skinparam nodesep 60
+skinparam ranksep 80
+skinparam shadowing false
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+
+' ==================== RELATIONSHIPS ====================
+
+' Strong Composition
+Group "1" *-- "0..*" User : contains
+
+' Associations
+Expense "1" --> "1" User : paidBy
+Expense "1" --> "1" Group : belongs to
+
+' Service manages all entities (Aggregation)
+SplitwiseService o-- "*" User : manages
+SplitwiseService o-- "*" Group : manages
+SplitwiseService o-- "*" Expense : stores
+
+' Uses Enum
+SplitwiseService --> SplitType : uses
+
+' Self association via balance map (very important for Splitwise)
+User "1" .. "1" User : owes (via balance map)
+
+' Optional: Show that Expense uses SplitType
+Expense --> SplitType
+
+
+@enduml

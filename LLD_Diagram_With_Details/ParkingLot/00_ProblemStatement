@@ -1,0 +1,3 @@
+Design a Parking Lot system that supports multiple floors,
+different vehicle types (Car, Bike, Truck),
+parking/unparking, payment, and checking available spots.

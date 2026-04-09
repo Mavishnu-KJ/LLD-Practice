@@ -1,0 +1,68 @@
+@startuml
+
+
+class lld.parkinglot.ParkingLot {
+- List<Floor> floors
+- Map<VehicleType,List<ParkingSpot>> availableSpots
++ Ticket parkVehicle(Vehicle)
++ Payment exitVehicle(String)
++ int numberOfAvailableSpots(VehicleType)
+}
+
+
+class lld.parkinglot.Ticket {
+- String ticketId
+- Vehicle vehicle
+- ParkingSpot parkingSpot
+- LocalDateTime timeStamp
+}
+
+class lld.parkinglot.Vehicle {
+- String licensePlate
+- VehicleType vehicleType
+}
+
+class lld.parkinglot.Payment {
+- Ticket ticket
+- Double amount
+~ String transactionId
+~ PaymentStatus paymentStatus
+}
+
+class lld.parkinglot.ParkingSpot {
+- int spotNumber
+- VehicleType vehicleType
+~ boolean isOccupied
+- Vehicle currentVehicle
+}
+
+enum lld.parkinglot.PaymentStatus {
++  SUCCESS
++  FAILED
++  PENDING
+}
+
+enum lld.parkinglot.VehicleType {
++  BIKE
++  CAR
++  TRUCK
+}
+
+class lld.parkinglot.Floor {
+- int floorNumber
+- List<ParkingSpot> parkingSpots
+}
+
+'Fix overlapping labels
+skinparam nodesep 50
+skinparam ranksep 50
+
+'Relationships (arrows)
+ParkingLot "1" *-- "*" Floor : has
+Floor "1" *-- "*" ParkingSpot : contains
+ParkingSpot "0..1" -- "0..1" Vehicle : occupied by
+Ticket "1" -- "1" Vehicle : for
+Ticket "1" -- "1" ParkingSpot : at
+Payment "1" -- "1" Ticket : for
+
+@enduml

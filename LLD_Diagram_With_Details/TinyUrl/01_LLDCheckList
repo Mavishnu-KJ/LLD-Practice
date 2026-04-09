@@ -1,0 +1,199 @@
+problem :
+Design a URL shortening service like TinyURL
+
+01. Clarify Requirements
+
+Functional Requirements:
+
+Given a long URL, the system should generate a short URL.
+Given a short URL, the system should redirect to the original long URL.
+The short URL should be unique.
+Support custom short alias (optional) — user can provide their own short string.
+Support expiration of short URLs (optional but good to discuss).
+
+Non-Functional Requirements:
+
+The service should be highly available and scalable (handle millions of URLs and high redirection traffic).
+Redirection should be very fast (low latency).
+Short URLs should be as short as possible (ideally 7-8 characters).
+
+What is the expected scale? (e.g., number of URLs created per day? redirection requests per second?)
+Should short URLs have an expiration time? If yes, what is the default?
+Do we need to support custom aliases? What if the custom alias is already taken?
+Is rate limiting required to prevent abuse?
+Do we need to track click counts or analytics?
+
+Typical Constraints (You can assume these):
+
+1 ≤ number of URLs ≤ 10^8
+Short URL length: 7–8 characters (Base62 encoding)
+Redirection should be fast (< 100ms)
+
+02. Identify Main entities (Main classes)
+
+UrlShortenerService - main service class
+UrlMapping
+User - for custom alias
+
+03. Create classes with method signatures / puml coding
+
+04. Generate/Draw the diagram
+
+05. Walkthrough the LLD
+
+=> The core of the system is the UrlShortenerService class
+=> This service is responsible for two main operations:
+    shortening a long URL and redirecting from a short URL
+=> To achieve fast O(1) lookups in both directions, I am using two HashMaps
+=> shortToLong → Maps a short URL to its corresponding UrlMapping object.
+This is mainly used for redirection.
+=> longToShort → Maps the original long URL to its UrlMapping object.
+   This helps us avoid creating duplicate short URLs for the same long URL.
+=> The central entity is the UrlMapping class.
+=> UrlMapping class contains longUrl, shortUrl, createdBy, createdAt, expiresAt, clickCount
+=> UrlShortenerService has a composition relationship with UrlMapping (1 to many).
+   The service manages and owns all the UrlMappings.
+=> UrlMapping has an association with User (1 to 0..1).
+   A short URL may or may not be created by a registered user.
+=> shortenUrl(longUrl, customAlias): Checks if the long URL already exists using the longToShort map.
+If not, it generates a new short URL (or uses the custom alias),
+creates a UrlMapping, and stores it in both maps.
+=> redirect(shortUrl): Looks up the short URL in the shortToLong map,
+increments the click count, and returns the original long URL.
+=> getStats(shortUrl): Returns the complete UrlMapping object containing all statistics.
+
+06. Explain Trade-offs
+
+=> I chose two HashMaps for O(1) time complexity for both shortening and redirection.
+=> Using in-memory maps is fast but not persistent.
+In production, I would replace these with Redis for persistence, high availability, and horizontal scaling.
+=> I kept expiration and click count inside UrlMapping for simplicity.
+If analytics become very complex, we can separate it later.
+=> This design is simple, scalable, and supports both auto-generated and custom short URLs."
+
+________________________________________________________________________________________________
+Some possible queries :
+
+
+
+1. Core Design & Trade-offs
+
+Q: Why two HashMaps? Memory implications at scale?
+Answer:
+I’m maintaining two bidirectional maps for O(1) lookup in both directions.
+- `longToShort`: Quickly check if a long URL is already shortened (to avoid duplicates).
+- `shortToLong`: Fast redirect (most frequent operation).
+
+At scale (say 1 billion URLs), each `UrlMapping` object takes roughly 200–300 bytes. Two maps would consume ~500–600 GB of RAM, which is not feasible. So in production, these maps would be replaced by a persistent database (primary source of truth) + Redis cache for hot URLs.
+
+Q: How do you handle collision when two long URLs generate the same short code?
+Answer:
+I use a counter + Base62 encoding for short code generation instead of pure random.
+If collision still occurs (very rare with 62^7 ≈ 3.5 trillion possibilities), I append a counter suffix or re-generate with a different seed. In the DB approach, I would do a unique constraint on shortUrl and retry with incremented counter.
+
+Q: How to make it persistent? Which DB and schema?
+Answer:
+I would use MySQL (or PostgreSQL) as primary DB with this schema:
+
+```sql
+CREATE TABLE url_mapping (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    short_url VARCHAR(10) UNIQUE NOT NULL,
+    long_url TEXT NOT NULL,
+    user_id VARCHAR(36),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP,
+    click_count BIGINT DEFAULT 0,
+    INDEX idx_short_url (short_url),
+    INDEX idx_expires_at (expires_at)
+);
+```
+
+Redis would cache the most frequently accessed short→long mappings (TTL = 1 hour or based on access).
+
+2. Scalability & Concurrency
+
+Q: How do you scale to 10,000 shorten requests/sec?
+Answer:
+Current in-memory design won’t scale. Production design:
+- Multiple instances of UrlShortenerService behind a Load Balancer.
+- Database as source of truth + Redis for reads.
+- Write path: Use Kafka or RabbitMQ → async worker that writes to DB and invalidates cache.
+- Sharding: Shard MySQL by user_id or short_url hash.
+- For extremely high scale, move to Cassandra or DynamoDB-style wide-column store.
+
+Q: Concurrent shorten requests for same long URL?
+Answer:
+I would use distributed lock (Redis RedLock or DB row-level lock) or optimistic locking.
+Better approach: Always return the same short URL for the same long URL. Before insert, I first check Redis + DB (with read-through cache). If exists, return existing one. This avoids duplicates and race conditions.
+
+Q: Rate limiting?
+Answer:
+I would implement token-bucket rate limiting at API Gateway level (e.g., using Redis) — 100 URLs per user per minute for free tier, higher for paid.
+
+3. Performance & Optimizations
+
+Q: How do you make redirect super fast?
+Answer:
+Redirect is the hot path.
+- First check Redis cache (shortUrl → longUrl).
+- Cache hit → 302 redirect in <10ms.
+- Cache miss → read from MySQL, write to Redis with TTL, then redirect.
+- For analytics, I fire an async event to Kafka instead of updating DB synchronously.
+
+Q: How do you generate short code?
+Answer:
+I maintain a global counter (can be in Redis or a separate ID service).
+Convert the counter to Base62.
+Example: counter = 12345 → short code = “d8k9” (Base62).
+This gives collision-free and predictable growth. For vanity URLs, I allow user-provided alias with uniqueness check.
+
+4. Advanced Extensions
+
+Q: How do you handle URL expiration and cleanup?
+Answer:
+- Store `expiresAt` in DB.
+- Run a daily cron job (or Quartz scheduler) that deletes expired entries (DELETE WHERE expires_at < NOW()).
+- To avoid load, do it in batches using `LIMIT 10000`.
+- Alternatively, let Redis handle soft expiry and lazy deletion on access.
+
+Q: Analytics / clickCount for hot URLs?
+Answer:
+Synchronous update would create hotspot.
+Solution:
+- On every redirect, publish an event to Kafka.
+- A separate analytics consumer aggregates clicks (every 5–10 seconds) and updates DB in batch.
+- For real-time dashboard, maintain a separate Redis counter per shortUrl.
+
+Q: Delete / deactivate a short URL?
+Answer:
+Add a soft-delete flag `is_active` in UrlMapping.
+On delete request → set flag to false and remove from Redis cache.
+For hard delete, remove from DB after confirmation.
+
+Q: Security concerns?
+Answer:
+- Scan longUrl for malware/phishing using external service (Google Safe Browsing API).
+- Block blacklisted domains.
+- For private links, add password field and encrypt it.
+- Rate limit + CAPTCHA on suspicious activity.
+
+5. Overall Trade-offs & Improvements
+
+Q: What are the biggest trade-offs in your current design?
+Answer:
+Current design is simple and fast for learning/demo but has these issues:
+- Not persistent
+- Not horizontally scalable
+- No analytics at scale
+- Single point of failure
+
+Production improvements I would make:
+1. Replace in-memory maps with Redis + MySQL
+2. Add async processing via Kafka for analytics and cleanup
+3. Implement proper Base62 + counter generation
+4. Add rate limiting and abuse prevention
+5. Support vanity/custom short URLs
+6. Separate read and write paths
+
+
