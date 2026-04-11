@@ -1,72 +1,84 @@
-Problem :
-Design a Parking Lot system that supports multiple floors,
-different vehicle types (Car, Bike, Truck),
-parking/unparking, payment, and checking available spots.
+A. PROBLEM STATEMENT :
 
-01. Clarify Requirements
+Design a Low-Level Design for a Parking Lot System.
 
-How many floors? (assume multiple)
-Vehicle types? (Car, Bike, Truck with different spot sizes)
-Payment? (simple time-based or fixed?)
-Multiple entry/exit gates? (yes)
-Concurrency? (multiple vehicles parking at same time?)
-Analytics? (not needed for basic LLD)
+Requirements:
 
-02. Identify Main entities (Main classes)
+The parking lot has multiple floors.
+Each floor has parking spots of different types: Motorcycle (Two-wheeler), Compact (Car), and Large (Bus/Truck).
+Different vehicle types can only park in compatible spots (e.g., a bus cannot park in a compact spot, but a bike can park anywhere).
+On entry: Automatically assign the nearest available compatible parking spot and issue a ticket.
+On exit: Calculate parking fee based on duration and vehicle type, then free up the spot.
+Support basic operations: park vehicle, exit vehicle, check availability, and display status.
 
-ParkingLot - Main Service class
-Floor
-Vehicle
-Ticket
-Payment
-VehicleType (enum)
-PaymentStatus (enum)
+Constraints:
 
-03. Create classes with method signatures / puml coding
+In-memory implementation is acceptable.
+Assume a medium-sized parking lot (3–5 floors).
+Support multiple vehicles entering/exiting concurrently (mention thread-safety as future improvement).
 
-04. Generate/Draw the diagram
+B. HAPPY PATH STORY (SIMPLE REAL LIFE STORY)
 
-05. Explain the LLD
+=> Rahul drives his Car into the parking lot.
+=> The system checks from Floor 1 upwards and finds the nearest available Compact spot on Floor 1.
+It assigns the spot and issues a Ticket with entry time.
+=> After 4 hours, Rahul returns. The system calculates the fee (₹20 per hour for Car = ₹80),
+prints the amount, frees the parking spot, and closes the ticket.
+=> Meanwhile, a bike rider gets a Motorcycle spot on Floor 2, and a bus gets a Large spot on Floor 3.
+=> This flow covers vehicle entry, spot allocation by type, ticketing, fee calculation, and spot release.
 
-This is my Parking Lot design.
-ParkingLot is the main class and has many Floors (composition).
-Each Floor contains many ParkingSpots.
-ParkingSpot knows its type (Car, Bike, Truck) and whether it's occupied.
-Vehicle has license plate and type.
-Ticket links a Vehicle to a ParkingSpot with entry time.
-Payment is linked to a Ticket with amount and status.Main operations:
-parkVehicle: Find available spot of matching type → create Ticket → mark spot occupied.
-exitVehicle: Use ticketId to find spot → calculate time → create Payment → free the spot.
+C. 6 MANDATORY STEPS FOR LLD DESIGN
 
-06. Explain Trade-offs
+1. Clarify requirements
 
-Used composition (ParkingLot has Floors) instead of inheritance because floors are parts of the lot.
-Used enums for VehicleType to avoid magic strings.
-For scalability, I could add multiple entry gates later by adding a Gate class.
-Payment calculation is simple — could be extended to hourly rates.
+=> Functional: Multi-floor support, different spot & vehicle types,
+automatic nearest spot allocation, ticket generation, fee calculation on exit.
+=> Non-Functional: Fast spot finding, support concurrent operations.
+=> Assumptions: Simple hourly pricing, single parking lot instance, no reserved/handicapped spots.
+=> Edge Cases: Parking full, no compatible spot available, invalid ticket, negative parking duration.
 
-________________________________________________________________________________________________
-Some possible queries :
+2. Identify Entities & Relationships
 
-Why we did not use Inheritance for Vehicles like Car extends Vehicle, Truck extends Vehicle ?
+=> Main Entities: ParkingLot, Floor, ParkingSpot, Vehicle, Ticket, ParkingFeeCalculator
+=> Key Relationships:
+ParkingLot has multiple Floors (Composition)
+Floor has multiple ParkingSpots (Composition)
+ParkingSpot can hold one Vehicle (Association)
 
-We used Composition (ParkingSpot has a Vehicle)
-instead of Inheritance (Car extends Vehicle) for the following reasons:
+3: Design Classes & Method Signatures
 
-1. "Is-A" vs "Has-A" Relationship
+4: Class Diagram
 
-Inheritance (Car extends Vehicle) means:
-Car IS-A Vehicle — This is true in real life.
+5: Explain the Design Verbally
 
-But in the Parking Lot system, the core relationship is:
-ParkingSpot HAS-A Vehicle (a spot is occupied by a vehicle)
+ParkingLot is composed of multiple Floors, and each Floor is composed of ParkingSpots.
+I used composition because a Floor is a part of the ParkingLot.
+When a vehicle arrives, we iterate floors from ground level and
+find the first compatible empty spot using canPark() logic.
+On exit, we calculate fee using a separate calculator class and free the spot.
 
-Using inheritance here would be incorrect modeling because:
+D. COMPLETE CODE IMPLEMENTATION
 
-A ParkingSpot is not a type of Vehicle
-A Vehicle is not a type of ParkingSpot
+E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWERS (WITH ANSWERS)
 
-So we use Composition: ParkingSpot contains (has) a Vehicle.
+Q1. Why did you use Composition instead of Inheritance?
+Answer: Because Floor is a part of ParkingLot and ParkingSpot is a part of Floor.
+Using inheritance would create incorrect "Is-A" relationship.
 
-2. Main Reasons We Avoided Inheritance Here
-Refer LLD_Diagram_With_Details/ParkingLot/WhyCompositionOverInheritanceUsed.jpg
+Q2. How do you decide the "nearest" spot?
+Answer: I iterate floors from ground level (Floor 1) upwards.
+This naturally gives nearest floor preference.
+
+Q3. What if the parking lot is very large?
+Answer: Linear search becomes inefficient.
+We can maintain separate Queue<ParkingSpot> or Map<SpotType, PriorityQueue<ParkingSpot>>
+per floor for faster lookup.
+
+Q4. Is the system thread-safe?
+Answer: Currently no.
+In real implementation, we should use ReentrantLock per spot or synchronize the parking/unparking logic.
+
+Q5. How can we support different pricing rules (peak hours, weekend)?
+Answer: Use Strategy Pattern. Create FeeStrategy interface with different implementations
+like NormalFeeStrategy, PeakHourStrategy, etc.
+

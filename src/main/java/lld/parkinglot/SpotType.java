@@ -1,5 +1,5 @@
 package lld.parkinglot;
 
-public enum VehicleType {
+public enum SpotType {
     MOTORCYCLE, COMPACT, LARGE
 }

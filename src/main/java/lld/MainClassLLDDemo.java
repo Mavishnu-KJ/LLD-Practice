@@ -1,17 +1,58 @@
 package lld;
 
+import lld.parkinglot.ParkingLot;
+import lld.parkinglot.Ticket;
+import lld.parkinglot.Vehicle;
+import lld.parkinglot.VehicleType;
 import lld.splitwise.Group;
 import lld.splitwise.SplitType;
 import lld.splitwise.SplitwiseService;
 import lld.splitwise.User;
 
+import java.time.LocalDateTime;
+
 public class MainClassLLDDemo {
 
     public static void main(){
 
+        ParkingLot parkingLot = new ParkingLot(3);
         SplitwiseService splitwiseService = new SplitwiseService();
 
-        //Happy Path Execution
+        /*ParkingLot LLD START*/
+        System.out.println("============ PARKING LOT LLD - START =========");
+
+        //Printing the available parking spots in the parking lot
+        parkingLot.findAvailableSpots();
+
+        Vehicle car = new Vehicle("TN01AB1234", VehicleType.COMPACT);
+        Vehicle bike = new Vehicle("MH02AB1234", VehicleType.MOTORCYCLE);
+        Vehicle bus = new Vehicle("KA02AB1234", VehicleType.LARGE);
+
+        //Park vehicles
+        Ticket carTicket = parkingLot.parkVehicle(car);
+        Ticket bikeTicket = parkingLot.parkVehicle(bike);
+        Ticket busTicket = parkingLot.parkVehicle(bus);
+
+        //Checking the parking lot available spots after parking the vehicles
+        parkingLot.findAvailableSpots();
+
+        // Simulate exit after some time
+        try {
+            Thread.sleep(1500);
+        } catch (Exception ignored) {
+
+        }
+
+        //Exit vehicle
+        parkingLot.exitVehicle(carTicket.getTicketId(), LocalDateTime.now());
+
+        //Checking the parking lot available spots after unparking the vehicles
+        parkingLot.findAvailableSpots();
+
+        System.out.println("============ PARKING LOT LLD - END =========");
+        /*ParkingLot LLD END*/
+
+        /*SplitWise LLD START*/
         System.out.println("============ SPLITWISE LLD - START =========");
         //Create Users
         User jishnu = splitwiseService.addUser("Jishnu", "jishnu@gmail.com");
@@ -42,6 +83,9 @@ public class MainClassLLDDemo {
         //Show all balances after settleUp
         splitwiseService.showAllBalances();
         System.out.println("============ SPLITWISE LLD - END =========");
+        /*SplitWise LLD END*/
+
+
 
 
     }
