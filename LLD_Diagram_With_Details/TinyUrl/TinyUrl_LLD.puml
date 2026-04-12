@@ -1,0 +1,52 @@
+@startuml
+class lld.tinyurl.UrlMapping {
+- String longUrl
+- String shortCode
+- LocalDateTime createdAt
+- LocalDateTime expiresAt
+- int clickCount
++ String getLongUrl()
++ String getShortCode()
++ int getClickCount()
++ LocalDateTime getCreatedAt()
++ LocalDateTime getExpiresAt()
++ boolean isExpired()
++ void incrementClick()
+}
+
+
+class lld.tinyurl.TinyUrlService {
+- Map<String,UrlMapping> shortToMapping
+- Map<String,String> longToShort
+- long counter
+- {static} int CODE_LENGTH
+- {static} String BASE62_CHARS
+- {static} int DEFAULT_EXPIRY_DAYS
++ String shortenUrl(String)
++ String redirect(String)
++ void showAnalytics(String)
++ String shortenWithCustomAlias(String,String)
+- String generateBase62Code()
+}
+
+'Arrows and Relationships
+
+skinparam nodesep 60;
+skinparam ranksep 70;
+skinparam shadowing false;
+skinparam monochrome true;
+skinparam classAttributeIconSize 0;
+
+'TinyUrlService manages the UrlMapping
+TinyUrlService "1" o--> "many" UrlMapping : manages
+
+'Important to show bidirectonal mapping
+note right of TinyUrlService
+    longToShort : longUrl -> shortCode
+    shortToMapping : shortCode -> UrlMapping
+end note
+
+'Self association via shortToMapping map and longToShort map
+UrlMapping "1" .. "1" UrlMapping : mapped by shortCode
+
+@enduml

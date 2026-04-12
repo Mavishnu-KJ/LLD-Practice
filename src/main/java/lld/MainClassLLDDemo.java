@@ -8,6 +8,7 @@ import lld.splitwise.Group;
 import lld.splitwise.SplitType;
 import lld.splitwise.SplitwiseService;
 import lld.splitwise.User;
+import lld.tinyurl.TinyUrlService;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +18,7 @@ public class MainClassLLDDemo {
 
         ParkingLot parkingLot = new ParkingLot(3);
         SplitwiseService splitwiseService = new SplitwiseService();
+        TinyUrlService tinyUrlService = new TinyUrlService();
 
         /*ParkingLot LLD START*/
         System.out.println("============ PARKING LOT LLD - START =========");
@@ -51,6 +53,39 @@ public class MainClassLLDDemo {
 
         System.out.println("============ PARKING LOT LLD - END =========");
         /*ParkingLot LLD END*/
+
+        /*TinyUrl LLD START*/
+        System.out.println("============ TINY URL LLD - START =========");
+
+        String longUrl = "https://www.myblog.com/articles/goa/best-places-to-visit-in-goa-with-budget-and-itinerary?source=newsletter&utm_campaign=summer";
+
+        //Shorten URL
+        String shortCode1 = tinyUrlService.shortenUrl(longUrl);
+        System.out.println("Generated Short Code: " + shortCode1);
+
+        //Simulate clicks
+        tinyUrlService.redirect(shortCode1);
+        tinyUrlService.redirect(shortCode1);
+        tinyUrlService.redirect(shortCode1);
+
+        //Check analytics
+        tinyUrlService.showAnalytics(shortCode1);
+
+        //Custom Alias
+        try {
+            tinyUrlService.shortenWithCustomAlias(longUrl, "goasummer");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        try {
+            tinyUrlService.shortenWithCustomAlias(longUrl, "goasummer");
+        } catch (Exception e) {
+            System.out.println("Error while trying the same shortCode again : " + e.getMessage());
+        }
+
+        System.out.println("============ TINY URL LLD - END =========");
+        /*TinyUrl LLD END*/
 
         /*SplitWise LLD START*/
         System.out.println("============ SPLITWISE LLD - START =========");
