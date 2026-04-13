@@ -1,0 +1,129 @@
+A. PROBLEM STATEMENT
+
+Design Low-Level Design for BookMyShow (Movie Ticket Booking System).
+
+Requirements:
+
+Users can browse movies currently playing in different cities.
+Users can view show timings for a movie in a specific theatre.
+Users can select seats and book tickets for a show.
+Multiple users should not be able to book the same seat at the same time (concurrency handling).
+Support seat selection (single or multiple seats).
+On successful booking, generate a ticket with booking details.
+Handle basic payment flow (assume payment succeeds for LLD).
+
+Constraints:
+
+In-memory implementation is acceptable.
+Focus on core booking flow.
+Support concurrency (multiple users trying to book same show).
+
+Edge Cases:
+
+Seat already booked by another bookMyShowUser.
+Show is full.
+Invalid seat selection.
+Booking timeout / seat hold expiration.
+
+B. HAPPY PATH STORY
+
+=> Rahul wants to watch the movie "Avengers: Secret Wars" this weekend with this friends.
+=> Rahul opens BookMyShow, selects Bangalore city, searches for the movie, and
+sees it is playing at PVR Park Square Mall at 6:30 PM.
+=> He selects 3 seats in the premium section (A12, A13, A14).
+=> The system temporarily holds these seats for him.
+=> He proceeds to payment, completes it, and receives a confirmed ticket with QR code.
+=> Meanwhile, his friend Priya tries to book the same seats but gets a message "Seats already booked".
+=> This covers: Movie → Theatre → Show → Seat Selection → Booking with concurrency handling.
+
+C. 6 MANDATORY STEPS FOR LLD DESIGN
+
+1. Clarify requirements
+
+=> Functional: Browse movies, view shows, select seats, book tickets, handle concurrency.
+=> Non-Functional: Fast seat availability check, prevent double booking (race condition).
+=> Assumptions: Single city for simplicity, payment is mocked, seats are held temporarily.
+=> Edge Cases: Seat conflict, show full, booking timeout, invalid seat.
+
+2. Identify entities and relationships
+
+=> Main entities : Movie, Theater, Screen, Show, Seat, Booking, User
+=> Key relationships :
+Theatre has multiple Screens
+Screen has multiple Seats
+Show belongs to one Movie + one Screen
+Booking contains multiple Seats + one Show + one User
+
+3. Design classes and method signatures
+
+4. Create class diagrams
+
+5. Explain the LLD diagram verbally
+=> BookMyShowService acts as the facade.
+=> The most critical part is seat booking with concurrency
+=> BookMyShowService uses a synchronized method to ensure only one user can book seats for a show at a time
+=> When a user tries to book seats, we first check availability, hold the seats, then create a Booking after payment.
+
+
+6. Discuss trade-offs and alternatives
+
+=> Synchronized method vs ReentrantLock: Used synchronized for simplicity in LLD.
+=> In-memory Map vs Database: Fine for LLD. In production, we would use optimistic locking or Redis for seat inventory.
+=> Seat hold timeout: Not implemented fully here, can be added with ScheduledExecutorService.
+=> Strategy Pattern can be used for different pricing rules (weekday vs weekend).
+
+D. COMPLETE CODE IMPLEMENTATION
+
+E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWER (WITH ANSWERS)
+
+Q1. How did you handle concurrency / double booking?
+Answer: Used synchronized on bookTickets() method so only one thread can book for a show at a time.
+
+Q2. What if 1000 users try to book at the same time?
+Answer: Synchronized method becomes a bottleneck.
+In production, we use Redis + Lua script or database row-level locking for better scalability.
+
+Q3. How would you implement seat hold (temporary reservation)?
+Answer: We can add a SeatHold map with timestamp. After 10 minutes, release the hold using a ScheduledExecutorService.
+
+Q4. How would you scale this for high traffic?
+Answer: Use Redis for seat inventory with Lua scripts for atomic booking. Main data in sharded database.
+Implement Saga pattern for distributed transactions.
+
+Q5. Why is Booking class separate?
+Answer: It maintains booking history, status, and user details. It follows Single Responsibility Principle.
+
+Q6. How can you differentiate Customer APIs and Admin APIs ?
+=> I have separated user-facing methods and admin methods clearly.
+=> In a real system, we would use Role-based access control (RBAC) or separate AdminService and UserService.
+For LLD, I have kept them in one service but logically separated them.
+Using Interfaces (More Advanced)
+interface UserService {
+    Booking bookTickets(...);
+}
+
+interface AdminService {
+    Show addShow(...);
+}
+
+class BookMyShowService implements UserService, AdminService { ... }
+
+Q7. Why addShow() should NOT be in Screen class ?
+
+Show is not owned by Screen alone
+A Show is a combination of:
+Movie
+Screen
+Show Time (7:30 PM, 10:30 PM, etc.)
+
+One Screen can have multiple shows on the same day (different timings).
+One Show belongs to one Movie + one Screen + one Time.
+So Show is a separate entity, not just "something inside Screen".
+Better Responsibility
+Screen should be responsible for seats and layout.
+Show should be responsible for which movie is playing at what time on that screen.
+BookMyShowService (or a ShowService) should manage the scheduling of shows.
+
+Real-world modeling
+In actual BookMyShow / PVR systems, the admin first adds a movie, then creates "Shows" by assigning movie + screen + time.
+Shows are not directly added inside Screen object.

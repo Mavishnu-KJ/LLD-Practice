@@ -1,0 +1,116 @@
+@startuml
+
+
+' ==================== ENUMS ====================
+enum SeatType {
+  REGULAR
+  PREMIUM
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+' ==================== CLASSES ====================
+class Movie {
+  - String movieId
+  - String movieTitle
+  - String movieGenre
+}
+
+class Theater {
+  - String theaterId
+  - String theaterName
+  - String city
+}
+
+class Screen {
+  - String screenId
+  - List<Seat> seats
+}
+
+class Seat {
+  - String seatId
+  - SeatType seatType
+  - boolean isBooked
+}
+
+class Show {
+  - String showId
+  - Movie movie
+  - Screen screen
+  - LocalDateTime showTime
+  - Set<Seat> bookedSeats
+}
+
+class Booking {
+  - String bookingId
+  - BookMyShowUser bookMyShowUser
+  - Show show
+  - List<Seat> seats
+  - double totalAmount
+  - BookingStatus bookingStatus
+}
+
+class BookMyShowUser {
+  - String userId
+  - String username
+}
+
+class BookMyShowService {
+  - Map<String, Show> showsMap
+  - Map<String, Booking> bookingsMap
+
+  ' User APIs
+  + Booking bookTickets(User user, String showId, List<String> seatNumbers)
+
+  ' Admin APIs
+  + void addShow(Movie movie, Screen screen, int numberOfShows)
+  + void onboardTheater(Theater theater)
+  + void addScreenToTheater(Theater theater, Screen screen)
+}
+
+' ==================== RELATIONSHIPS ====================
+skinparam nodesep 60
+skinparam ranksep 75
+skinparam shadowing false
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+
+' Service manages core entities
+BookMyShowService o-- "many" Show : manages
+BookMyShowService o-- "many" Booking : manages
+
+' Note for clarity
+note right of BookMyShowService
+
+  showsMap : showId -> Show
+  bookingsMap : bookingId -> Booking
+
+  User APIs:
+   • bookTickets()
+
+  Admin APIs:
+   • addShow()
+   • onboardTheater()
+   . addScreenToTheater()
+end note
+
+' Composition (Strong "Has-A")
+Theater "1" *-- "many" Screen : contains
+Screen "1" *-- "many" Seat : contains
+
+' Association
+Show "1" --> "1" Movie : plays
+Show "1" --> "1" Screen : on
+Booking "1" --> "1" BookMyShowUser : by
+Booking "1" --> "1" Show : for
+Booking "1" --> "many" Seat : reserves
+
+' Enum usages
+Seat --> SeatType : type
+Booking --> BookingStatus : status
+
+@enduml

@@ -1,5 +1,6 @@
 package lld;
 
+import lld.bookmyshow.*;
 import lld.parkinglot.ParkingLot;
 import lld.parkinglot.Ticket;
 import lld.parkinglot.Vehicle;
@@ -10,7 +11,12 @@ import lld.splitwise.SplitwiseService;
 import lld.splitwise.User;
 import lld.tinyurl.TinyUrlService;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 public class MainClassLLDDemo {
 
@@ -19,6 +25,7 @@ public class MainClassLLDDemo {
         ParkingLot parkingLot = new ParkingLot(3);
         SplitwiseService splitwiseService = new SplitwiseService();
         TinyUrlService tinyUrlService = new TinyUrlService();
+        BookMyShowService bookMyShowService = new BookMyShowService();
 
         /*ParkingLot LLD START*/
         System.out.println("============ PARKING LOT LLD - START =========");
@@ -119,6 +126,29 @@ public class MainClassLLDDemo {
         splitwiseService.showAllBalances();
         System.out.println("============ SPLITWISE LLD - END =========");
         /*SplitWise LLD END*/
+
+        /*BookMyShow LLD START*/
+        System.out.println("============ BOOKMYSHOW LLD - START =========");
+
+        // Admin Operations
+        Movie movie = new Movie("M001", "Avengers: Secret Wars", "Super Hero");
+        Theater theatre = new Theater("T001", "PVR ParkSquare Mall", "Bangalore");
+        Screen screen = new Screen("SC001", "Screen - 01", 50);
+
+        bookMyShowService.onboardTheater(theatre);
+        bookMyShowService.addScreenToTheater(theatre, screen);
+        bookMyShowService.addShow(movie, screen, LocalDateTime.of(LocalDate.now(), LocalTime.of(2, 30)), 5);
+
+        //BookMyShowUser Operations
+        BookMyShowUser Rahul = new BookMyShowUser("rahul@gmail.com", "Rahul");
+        List<String> seats = Arrays.asList("S12", "S13", "S14");
+        Booking booking = bookMyShowService.bookTickets(Rahul, "SH-4", seats);
+        //Note: In real code, use actual showId
+        System.out.println("Booking successful for " + Rahul.getUsername());
+
+        System.out.println("============ BOOKMYSHOW LLD - END =========");
+        /*BookMyShow LLD END*/
+
 
 
 
