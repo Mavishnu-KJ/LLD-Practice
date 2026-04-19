@@ -1,6 +1,7 @@
 package lld;
 
 import lld.bookmyshow.*;
+import lld.cabbooking.*;
 import lld.parkinglot.ParkingLot;
 import lld.parkinglot.Ticket;
 import lld.parkinglot.Vehicle;
@@ -26,6 +27,7 @@ public class MainClassLLDDemo {
         SplitwiseService splitwiseService = new SplitwiseService();
         TinyUrlService tinyUrlService = new TinyUrlService();
         BookMyShowService bookMyShowService = new BookMyShowService();
+        CabBookingService cabBookingService = new CabBookingService();
 
         /*ParkingLot LLD START*/
         System.out.println("============ PARKING LOT LLD - START =========");
@@ -149,6 +151,60 @@ public class MainClassLLDDemo {
         System.out.println("============ BOOKMYSHOW LLD - END =========");
         /*BookMyShow LLD END*/
 
+        /*CabBooking LLD START*/
+        System.out.println("============ CAB BOOKING LLD - START =========");
+
+        //Admin operations
+        //Onboard drivers
+        Driver d1 = new Driver("D001", "Ramesh",
+                new lld.cabbooking.Vehicle("KA01AB1234", lld.cabbooking.VehicleType.SEDAN),
+                new Location("Whitefield", 12.97, 77.75));
+        Driver d2 = new Driver("D002", "Suresh",
+                new lld.cabbooking.Vehicle("KA02CD5678", lld.cabbooking.VehicleType.MINI),
+                new Location("Indiranagar", 12.98, 77.64));
+
+        cabBookingService.onboardDriver(d1);
+        cabBookingService.onboardDriver(d2);
+
+        //Customer operations
+        //Rider requests ride
+        Rider rahul = new Rider("U001", "Rahul");
+        Location pickup = new Location("Whitefield", 12.97, 77.75);
+        Location drop = new Location("Koramangala", 12.93, 77.62);
+
+        Ride ride = cabBookingService.requestRide(rahul, pickup, drop);
+
+        //Simulate ride flow
+        cabBookingService.startRide(ride.getRideId());
+        cabBookingService.completeRide(ride.getRideId());
+
+        //Show ride details
+        cabBookingService.showRideDetails(ride.getRideId());
+
+        //Another flow to showcase the driver busy flow
+        Rider rider2 = new Rider("U002", "Rider2");
+        Rider rider3 = new Rider("U003", "Rider3");
+        Rider rider4 = new Rider("U004", "Rider4");
+
+        Ride rider2Ride = cabBookingService.requestRide(rider2, pickup, drop);
+        Ride rider3Ride = cabBookingService.requestRide(rider3, pickup, drop);
+        //Ride rider4Ride = cabBookingService.requestRide(rider4, pickup, drop); //Expecting exception as drivers are busy
+
+        //Simulate ride flow
+        cabBookingService.startRide(rider2Ride.getRideId());
+        cabBookingService.startRide(rider3Ride.getRideId());
+        //cabBookingService.startRide(rider4Ride.getRideId());
+        cabBookingService.completeRide(rider2Ride.getRideId());
+        cabBookingService.completeRide(rider3Ride.getRideId());
+        //cabBookingService.completeRide(rider4Ride.getRideId());
+
+        //Show ride details
+        cabBookingService.showRideDetails(rider2Ride.getRideId());
+        cabBookingService.showRideDetails(rider3Ride.getRideId());
+        //cabBookingService.showRideDetails(rider4Ride.getRideId());
+
+        System.out.println("============ CAB BOOKING LLD - END =========");
+        /*CabBooking LLD END*/
 
 
 

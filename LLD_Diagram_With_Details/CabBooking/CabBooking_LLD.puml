@@ -1,0 +1,135 @@
+@startuml
+class lld.cabbooking.Driver {
+- String driverId
+- String driverName
+- Vehicle vehicle
+- Location currentLocation
+- boolean isAvailable
++ String getDriverId()
++ String getDriverName()
++ Vehicle getVehicle()
++ Location getCurrentLocation()
++ boolean isAvailable()
++ void setAvailable(boolean)
++ void updateLocation(Location)
+}
+
+
+class lld.cabbooking.Location {
+- String area
+- double latitude
+- double longitude
++ String getArea()
++ double getLatitude()
++ double getLongitude()
++ double distanceTo(Location)
+}
+
+
+class lld.cabbooking.Vehicle {
+- String vehicleNumber
+- VehicleType vehicleType
++ String getVehicleNumber()
++ VehicleType getVehicleType()
+}
+
+
+enum lld.cabbooking.RideStatus {
++  REQUESTED
++  DRIVER_ASSIGNED
++  IN_PROGRESS
++  COMPLETED
++  CANCELLED
+}
+
+enum lld.cabbooking.VehicleType {
++  MINI
++  SEDAN
++  SUV
+}
+
+class lld.cabbooking.Ride {
+- String rideId
+- Rider rider
+- Driver driver
+- Location pickupLocation
+- Location dropLocation
+- RideStatus rideStatus
+- LocalDateTime requestTime
+- double fare
++ String getRideId()
++ Rider getRider()
++ Driver getDriver()
++ Location getPickupLocation()
++ Location getDropLocation()
++ RideStatus getRideStatus()
++ LocalDateTime getRequestTime()
++ double getFare()
++ void assignDriver(Driver,double)
++ void startRide()
++ void completeRide()
++ String toString()
+}
+
+
+class lld.cabbooking.CabBookingService {
+- Map<String,Driver> driverMap
+- Map<String,Ride> rideMap
++ void onboardDriver(Driver)
++ Ride requestRide(Rider,Location,Location)
+- Driver findNearestAvailableDriver(Location)
+- double calculateFare(Location,Location)
++ void startRide(String)
++ void completeRide(String)
++ void showRideDetails(String)
+}
+
+
+class lld.cabbooking.Rider {
+- String riderId
+- String riderName
++ String getRiderId()
++ String getRiderName()
+}
+
+'Arrows and relationships
+skinparam nodesep 60;
+skinparam ranksep 70;
+skinparam shadowing false;
+skinparam monochrome true;
+skinparam classAttributeIconSize 0;
+
+'Service manages core entities
+CabBookingService o-- "many" Driver : manages
+CabBookingService o-- "many" Ride : manages
+
+note right of CabBookingService
+
+    driverMap : driverId -> Driver
+    rideMap : rideId -> Ride
+
+    Admin APIs
+    + onboardDriver()
+
+    User/Customer APIs
+    + requestRide()
+    + startRide()
+    + completeRide()
+    + showRideDetails()
+
+end note
+
+' Composition (Strong "Has-A")
+Driver "1" *-- "1" Vehicle : owns
+
+' Association (main relationships)
+Ride "1" --> "1" Rider : Ride requested By
+Ride "1" --> "1" Driver : assigned to
+Ride "1" --> "1" Location : pickup
+Ride "1" --> "1" Location : drop
+
+'Enum usages
+Ride --> RideStatus : uses
+Vehicle --> VehicleType : uses
+
+@enduml

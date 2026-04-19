@@ -1,0 +1,87 @@
+A. PROBLEM STATEMENT
+
+Design Low-Level Design for Cab Booking System (like Ola / Uber).
+
+Requirements:
+
+Riders can request a ride by providing pickup and drop location.
+System should find nearby available drivers.
+Rider can see estimated fare and driver details.
+Driver can accept or reject the ride request.
+Once accepted, track the ride in real-time (basic status).
+Handle ride completion and payment (mocked).
+Prevent multiple drivers being assigned to the same ride.
+
+Constraints:
+
+In-memory implementation is acceptable.
+Focus on core matching and booking flow.
+Support basic concurrency (multiple ride requests).
+
+Edge Cases:
+
+No driver available nearby.
+Driver rejects the request.
+Rider cancels the ride.
+Same driver accepting multiple rides.
+
+B. HAPPY PATH STORY
+
+=> Rahul is in Whitefield, Bangalore and wants to go to Koramangala.
+=> He opens the app, enters pickup and drop location, and requests a ride.
+=> The system finds nearby drivers and shows him Driver Ramesh (Maruti Swift, 2 min away, ₹180 estimated fare).
+=> Ramesh accepts the request.
+=> Rahul sees driver details and live location.
+=> After reaching Koramangala, the ride is completed and payment is processed.
+=> Meanwhile, another rider tries to book but gets "No drivers available nearby" because all drivers are busy.
+=> This covers: Ride request → Driver matching → Acceptance → Ride lifecycle.
+
+C. 6 MANDATORY STEPS FOR LLD DESIGN
+
+1. Clarify requirements
+
+=> Functional: Request ride, find nearby drivers, driver accept/reject, track ride status, complete ride.
+=> Non-Functional: Fast driver matching, handle concurrent ride requests.
+=> Assumptions: Single city, simple distance-based fare, location is mocked as string.
+=> Edge Cases: No drivers, driver rejection, rider cancellation, double booking.
+
+2. Identify entities and relationships
+
+=> Main Entities: Rider, Driver, Ride, Location, Vehicle
+=> Key relationships :
+Ride belongs to one Rider and one Driver.
+Driver has one Vehicle.
+Ride has status and locations (pickup, drop).
+
+3. Design class diagrams and method signatures
+
+4. Create class diagram
+
+5. Explain the LLD diagram verbally
+
+=> The core of this system is the CabBookingService which maintains available drivers
+=> When a rider requests a ride, we find the nearest available driver using simple distance logic.
+=> Once a driver accepts, we create a Ride object and update statuses.
+=> I used synchronized method for booking to prevent race conditions.
+
+6. Discuss trade-offs and alternatives
+
+=> Simple linear search for nearest driver (fine for LLD). In production, use Geo-spatial indexing (e.g., Redis Geo or QuadTree).
+=> Synchronized method vs distributed lock.
+=> In-memory vs persistent storage with real-time updates (WebSocket/Kafka)
+
+D. COMPLETE CODE IMPLEMENTATION
+
+E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWER (WITH ANSWER)
+
+Q1. How do you find the nearest driver?
+Answer: Currently using simple linear search with distance.
+In production, we use Redis Geo or Geohash for efficient nearest driver search.
+
+Q2. How do you handle concurrency when multiple riders request at the same time?
+Answer: Used synchronized on requestRide().
+In real system, we use distributed locks or optimistic locking on driver availability.
+
+Q3. What if driver rejects the ride?
+Answer: We can add rejectRide() method and re-assign to next nearest driver with a retry limit.
+
