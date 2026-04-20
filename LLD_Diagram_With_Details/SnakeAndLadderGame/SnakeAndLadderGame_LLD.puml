@@ -1,0 +1,59 @@
+@startuml
+class lld.snakeandladdergame.SnakeAndLadderGame {
+- Board board
+- Dice dice
+- List<Player> playerList
+- int currentPlayerIndex
+- boolean gameOver
++ void playGame()
+}
+
+
+class lld.snakeandladdergame.Dice {
+- Random random
++ int roll()
+}
+
+
+class lld.snakeandladdergame.Board {
+- int size
+- Map<Integer,Integer> snakeMap
+- Map<Integer,Integer> ladderMap
+- void initializeSnakeAndLadderMap()
++ int getNextPosition(int,int)
++ boolean isWinningPosition(int)
+}
+
+
+class lld.snakeandladdergame.Player {
+- String name
+- int position
++ String getName()
++ int getPosition()
++ void setPosition(int)
+}
+
+'Arrows and Relationships
+skinparam nodesep 60;
+skinparam ranksep 70;
+skinparam shadowing false;
+skinparam monochrome true;
+skinparam classAttributeIconSize 0;
+
+'Core service strong composition (has A relationship)
+SnakeAndLadderGame *-- Board : has
+SnakeAndLadderGame *-- Dice : has
+
+' Aggregation - Game has players (players can exist independently)
+SnakeAndLadderGame "1" o-- "many" Player : has
+
+note left of Board
+    snakeMap : head -> tail
+    ladderMap : bottom -> top
+end note
+
+' Association - Board affects Player position
+Board ..> Player : updates position
+
+
+@enduml

@@ -1,0 +1,92 @@
+A. PROBLEM STATEMENT
+
+Design Low-Level Design for Snake and Ladder Game.
+
+Requirements:
+
+The game is played by 2 or more players on a board of size N x N (usually 10x10 = 100 cells).
+Players roll a dice (1 to 6) and move their token.
+If a player lands on the bottom of a Ladder, they climb up to the top.
+If a player lands on the head of a Snake, they slide down to the tail.
+First player to reach the exact last cell (usually 100) wins.
+Support multiple players taking turns.
+Handle exact landing on the final cell (no overshooting).
+
+Constraints:
+
+In-memory implementation.
+Board size is fixed (e.g., 10x10).
+Simple dice roll (random 1-6).
+
+Edge Cases:
+
+Landing exactly on 100.
+Overshooting the last cell (should not move).
+Landing on snake/ladder multiple times in one turn.
+Two players on the same cell.
+
+B. HAPPY PATH STORY
+
+=> Four friends Sachin, Rahul, Priya, Amit start playing the snake and ladder game
+=> Sachin rolls a 6 and moves to position 6.
+=> Rahul rolls a 4 and lands on position 4, which has a Ladder → he climbs to position 14.
+=> Later, Priya reaches position 27 but unfortunately lands on a Snake head at 27 → she slides down to 7.
+=> After many turns, Sachin reaches exactly position 100 and wins the game.
+   Everyone congratulates him.
+=> This covers: Board movement, dice roll, ladder climb, snake slide, winning condition, and multiple players.
+
+C. 6 MANDATORY STEPS FOR LLD DESIGN
+
+1. Clarify requirements
+
+=> Functional: Multiple players, dice roll, move token, handle snakes & ladders, detect winner.
+=> Non-Functional: Simple turn-based game, clear game state.
+=> Assumptions: 10x10 board (100 cells), single dice (1-6), players take turns in order.
+=> Edge Cases: Exact landing on 100, overshooting 100, landing on snake/ladder, multiple players on same cell.
+
+2. Identify entities and relationships
+
+=> Main Entities: Game, Board, Player, Dice, Snake, Ladder
+=> Key Relationships :
+Game has multiple Players and one Board
+Board has Snakes and Ladders (as maps: start → end)
+Player has current position
+
+3. Design classes and method signatures
+
+4. Create class diagrams
+
+5. Explain the LLD diagram verbally
+
+=> The core is the SnakeAndLadderGame class which maintains the board (snakes and ladders as maps) and list of players.
+=> The core is the Game class which maintains the board (snakes and ladders as maps) and list of players.
+=> I used two HashMaps — one for snakes and one for ladders — for O(1) lookup.
+
+6. Discuss trade-offs and alternatives
+
+=> Used two separate maps for snakes and ladders for clarity. Could combine into one map with positive/negative values.
+=> Simple linear turn order. Can be extended with priority queue for special powers.
+=> In-memory is fine. For GUI version, we would add Observer pattern for board updates.
+
+
+D. COMPLETE CODE IMPLEMENTATION
+
+E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWER (WITH ANSWER)
+
+Q1. How do you handle overshooting the last cell?
+Answer: In getNextPosition(), if newPos > 100, we return the old position (no move).
+
+Q2. Can two players be on the same cell?
+Answer: Yes, the current design allows it. We can add a check if required.
+
+Q3. How would you make this a GUI-based game?
+Answer: Use Observer pattern so Board can notify all players when position changes.
+
+Q4. How the winner is decided here?
+In standard Snake and Ladder rules:
+The game ends immediately when the first player reaches the exact winning position (usually 100).
+That player is declared the Winner (1st place).
+The remaining players are considered losers.
+The game does NOT continue for 2nd, 3rd, or nth place.
+Traditional board game rules (physical Snake & Ladder) work this way.
+It keeps the game simple and focused on the "first to finish" concept.

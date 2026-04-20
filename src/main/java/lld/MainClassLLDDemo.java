@@ -6,6 +6,8 @@ import lld.parkinglot.ParkingLot;
 import lld.parkinglot.Ticket;
 import lld.parkinglot.Vehicle;
 import lld.parkinglot.VehicleType;
+import lld.snakeandladdergame.Player;
+import lld.snakeandladdergame.SnakeAndLadderGame;
 import lld.splitwise.Group;
 import lld.splitwise.SplitType;
 import lld.splitwise.SplitwiseService;
@@ -28,6 +30,7 @@ public class MainClassLLDDemo {
         TinyUrlService tinyUrlService = new TinyUrlService();
         BookMyShowService bookMyShowService = new BookMyShowService();
         CabBookingService cabBookingService = new CabBookingService();
+        SnakeAndLadderGame snakeAndLadderGame;
 
         /*ParkingLot LLD START*/
         System.out.println("============ PARKING LOT LLD - START =========");
@@ -206,6 +209,24 @@ public class MainClassLLDDemo {
         System.out.println("============ CAB BOOKING LLD - END =========");
         /*CabBooking LLD END*/
 
+        /*SnakeAndLadder LLD START*/
+        System.out.println("============ SNAKE AND LADDER LLD - START =========");
+
+        //Initialize players with position 0
+        List<Player> playerList = Arrays.asList(
+                new Player("Sachin", 0),
+                new Player("Rahul", 0),
+                new Player("Priya", 0),
+                new Player("Amit", 0)
+        );
+
+        snakeAndLadderGame = new SnakeAndLadderGame(playerList);
+
+        //Start game
+        snakeAndLadderGame.playGame();
+
+        System.out.println("============ SNAKE AND LADDER LLD - END =========");
+        /*SnakeAndLadder LLD END*/
 
 
 
