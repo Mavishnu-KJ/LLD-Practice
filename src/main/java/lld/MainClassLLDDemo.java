@@ -2,6 +2,8 @@ package lld;
 
 import lld.bookmyshow.*;
 import lld.cabbooking.*;
+import lld.elevatorcontroller.Direction;
+import lld.elevatorcontroller.ElevatorController;
 import lld.parkinglot.ParkingLot;
 import lld.parkinglot.Ticket;
 import lld.parkinglot.Vehicle;
@@ -31,6 +33,7 @@ public class MainClassLLDDemo {
         BookMyShowService bookMyShowService = new BookMyShowService();
         CabBookingService cabBookingService = new CabBookingService();
         SnakeAndLadderGame snakeAndLadderGame;
+        ElevatorController elevatorController;
 
         /*ParkingLot LLD START*/
         System.out.println("============ PARKING LOT LLD - START =========");
@@ -227,6 +230,27 @@ public class MainClassLLDDemo {
 
         System.out.println("============ SNAKE AND LADDER LLD - END =========");
         /*SnakeAndLadder LLD END*/
+
+        /*ElevatorController LLD START*/
+        System.out.println("============ ELEVATOR CONTROLLER LLD - START =========");
+        elevatorController = new ElevatorController(3, 15);
+
+        //User requests from different floors
+        elevatorController.requestElevator(12, Direction.DOWN);
+        elevatorController.requestElevator(5, Direction.UP);
+        elevatorController.requestElevator(1, Direction.UP);
+
+        // Simulate movement
+        for (int i = 0; i < 15; i++) {
+            elevatorController.simulateMovement();
+        }
+
+        // Internal request
+        elevatorController.requestFloor(1, 1);
+
+
+        System.out.println("============ ELEVATOR CONTROLLER LLD - END =========");
+        /*ElevatorController LLD END*/
 
 
 

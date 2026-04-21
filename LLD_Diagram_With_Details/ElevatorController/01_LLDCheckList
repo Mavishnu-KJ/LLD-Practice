@@ -1,0 +1,85 @@
+A. PROBLEM STATEMENT
+
+Design Low-Level Design for Elevator System.
+
+Requirements:
+
+Multiple elevators in a building with multiple floors.
+Users can call the elevator from any floor (up/down request).
+Inside the elevator, users can press floor buttons.
+Elevator should efficiently serve requests (move up/down, stop at requested floors).
+Support multiple elevators working together.
+Handle basic scenarios like door open/close, emergency stop (simplified).
+Show current floor and direction of each elevator.
+
+Constraints:
+
+In-memory implementation is fine.
+Focus on core elevator movement and request handling.
+Support concurrency (multiple users requesting at same time).
+
+Edge Cases:
+
+Elevator is full.
+Requests in both directions.
+No requests (elevator should go to idle state).
+Invalid floor request.
+
+B. HAPPY PATH STORY
+
+=> Sachin lives on the 12th floor. He presses the Down button on the 12th floor.
+=> The system assigns the nearest available elevator (Elevator A on 8th floor)
+=> Elevator A arrives at 12th floor, doors open. Sachin enters and presses Ground floor.
+=> The elevator stops at any intermediate floors if other users have requested them, then reaches the ground floor.
+=> Doors open, Sachin exits, and the elevator becomes available again.
+=> This covers: External request → Elevator assignment → Internal floor selection → Movement → Completion.
+
+C. 6 MANDATORY STEPS FOR LLD DESIGN
+
+1. Clarify requirements
+
+=> Functional: Call elevator from floor, select destination inside, efficient movement, multiple elevators.
+=> Non-Functional: Minimize waiting time, handle concurrent requests.
+=> Assumptions: Single building, simple distance-based assignment, doors and emergency are simplified.
+=> Edge Cases: Elevator full, conflicting direction requests, idle elevator positioning.
+
+2. Identify entities and relationships
+
+=> Main entities : Building, Elevator, FloorRequest, ElevatorRequest, ElevatorController
+=> Key relationships :
+Building has multiple Elevators
+Elevator has current floor, direction, and list of requests
+ElevatorController manages all elevators and assigns requests
+
+3. Design classes and method signatures
+
+4. Create class diagrams
+
+5. Explain the LLD diagram verbally
+
+=> ElevatorController is the brain of the system. It maintains a list of elevators.
+=> When a user makes a request from a floor,
+the controller finds the best elevator using simple logic (nearest + direction match).
+=> Each Elevator maintains its own queue of stops and moves accordingly.
+=> I used enums for Direction and Status to make the state clear.
+
+6. Discuss the trade-offs and alternatives
+
+=> Simple nearest elevator logic vs Advanced algorithms (SCAN, LOOK).
+=> In-memory vs Real hardware integration.
+=> Single controller vs Distributed control for very tall buildings.
+=> Can extend with priority queuing for VIP floors.
+
+D. COMPLETE CODE IMPLEMENTATION
+
+E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWER (WITH ANSWER)
+
+Q1. How do you choose the best elevator?
+Answer: Simple logic based on distance. In advanced systems, we use direction matching + load balancing.
+
+Q2. How do you handle multiple requests efficiently?
+Answer: Each elevator maintains a sorted set of stops (TreeSet).
+This allows efficient movement in one direction before reversing.
+
+Q3. What if all elevators are busy?
+Answer: We can add a queue for pending requests and assign when an elevator becomes free.

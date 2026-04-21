@@ -1,0 +1,74 @@
+@startuml
+class lld.elevatorcontroller.ElevatorRequest {
+- int elevatorId
+- int targetFloorId
++ int getElevatorId()
++ int getTargetFloorId()
+}
+
+
+class lld.elevatorcontroller.ElevatorController {
+- List<Elevator> elevators
++ void requestElevator(int,Direction)
++ void requestFloor(int,int)
+- Elevator findBestElevator(int,Direction)
++ void simulateMovement()
+}
+
+
+class lld.elevatorcontroller.FloorRequest {
+- int floorId
+- Direction direction
++ int getFloorId()
++ Direction getDirection()
+}
+
+
+enum lld.elevatorcontroller.ElevatorStatus {
++  MOVING
++  STOPPED
++  MAINTENANCE
+}
+
+class lld.elevatorcontroller.Elevator {
+- int elevatorId
+- int currentFloorId
+- Direction direction
+- ElevatorStatus elevatorStatus
+- Set<Integer> stopRequestsSet
++ int getElevatorId()
++ int getCurrentFloorId()
++ Direction getDirection()
++ ElevatorStatus getElevatorStatus()
++ void addStop(int)
++ void move()
+}
+
+
+enum lld.elevatorcontroller.Direction {
++  UP
++  DOWN
++  IDLE
+}
+
+'Arrows and Relationships
+
+skinparam nodesep 60;
+skinparam ranksep 70;
+skinparam shadowing false;
+skinparam monochrome true;
+skinparam classAttributeIconSize 0;
+
+' Main relationship - Controller manages Elevators
+ElevatorController "1" o-- "many" Elevator : manages
+
+' Requests are handled by Controller
+ElevatorController ..> ElevatorRequest : handles
+ElevatorController ..> FloorRequest : handles
+
+'Enum usages
+Elevator --> Direction : uses as currentDirection
+Elevator --> ElevatorStatus : uses as currentStatus
+FloorRequest --> Direction : uses as destination direction
+
+@enduml
