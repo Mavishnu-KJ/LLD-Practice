@@ -55,9 +55,27 @@ Transaction tracks inserted money and selected product
 
 5. Explain the LLD diagram verbally
 
+=> VendingMachine is the main class that maintains inventory and current transaction state.
+=> When a user inserts coins, we update the balance.
+=> On product selection, we check stock and sufficient balance, then dispense the item and return change.
+=> I use Strategy pattern for different payment/coin handling if needed in future.
+
 6. Discuss trade-offs and alternatives
+
+=> Simple state machine for transaction vs full FSM.
+=> In-memory Map for inventory. In production, use persistent storage.
+=> Can extend with Observer pattern for notifications (low stock, etc.).
+=> Used Map for coin denominations for easy extension.
 
 D. COMPLETE CODE IMPLEMENTATION
 
 E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWER (WITH ANSWER)
 
+Q1. How do you handle "out of stock" and "insufficient balance"?
+Answer: Checked in selectProduct() method before allowing selection.
+
+Q2. How would you support different payment methods (cards, UPI)?
+Answer: Use Strategy pattern – PaymentStrategy interface with CashPayment, CardPayment, UPIPayment implementations.
+
+Q3. How do you handle change when machine doesn't have exact coins?
+Answer: For LLD we assume it can return any amount. In real system, we track coin inventory and use greedy algorithm for change.
