@@ -1,0 +1,52 @@
+@startuml
+class lld.VendingMachine.Product {
+- String name
+- int price
+- int quantity
++ String getName()
++ int getPrice()
++ int getQuantity()
++ boolean isAvailable()
++ void dispense()
+}
+
+
+class lld.VendingMachine.VendingMachine {
+- Map<String,Product> inventoryMap
+- int currentBalance
+- Product selectedProduct
++ void insertCoin(Coin)
++ void selectProduct(String)
++ void dispense()
++ void showInventory()
++ void cancelTransaction()
+}
+
+
+enum lld.VendingMachine.Coin {
++  ONE
++  TWO
++  FIVE
++  TEN
++  TWENTY
++  FIFTY
+- int value
++ int getValue()
+}
+
+'Arrows and relationships
+skinparam nodesep 60;
+skinparam ranksep 70;
+skinparam shadowing false;
+skinparam monochrome true;
+skinparam classAttributeIconSize 0;
+
+lld.VendingMachine.VendingMachine "1" o--> "many" Product : contains
+lld.VendingMachine.VendingMachine ..> Coin : uses
+
+note right of lld.VendingMachine.VendingMachine
+    inventoryMap : product name -> Product
+    currentBalance : tracks inserted money
+end note
+
+@enduml

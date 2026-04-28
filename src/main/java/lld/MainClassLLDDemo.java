@@ -15,13 +15,14 @@ import lld.splitwise.SplitType;
 import lld.splitwise.SplitwiseService;
 import lld.splitwise.User;
 import lld.tinyurl.TinyUrlService;
+import lld.VendingMachine.Coin;
+import lld.VendingMachine.VendingMachine;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class MainClassLLDDemo {
 
@@ -34,6 +35,7 @@ public class MainClassLLDDemo {
         CabBookingService cabBookingService = new CabBookingService();
         SnakeAndLadderGame snakeAndLadderGame;
         ElevatorController elevatorController;
+        VendingMachine VendingMachine = new VendingMachine();
 
         /*ParkingLot LLD START*/
         System.out.println("============ PARKING LOT LLD - START =========");
@@ -252,6 +254,24 @@ public class MainClassLLDDemo {
         System.out.println("============ ELEVATOR CONTROLLER LLD - END =========");
         /*ElevatorController LLD END*/
 
+        /*VendingMachine LLD START*/
+        System.out.println("============ VENDING MACHINE SERVICE LLD - START =========");
+
+        //Show inventory
+        VendingMachine.showInventory();
+
+        //Happy path
+        VendingMachine.insertCoin(Coin.FIFTY);
+        VendingMachine.selectProduct("Coke");
+        VendingMachine.dispense();
+
+        System.out.println("\n--- Next Transaction ---");
+        VendingMachine.insertCoin(Coin.TEN);
+        VendingMachine.selectProduct("Water");
+        VendingMachine.cancelTransaction();
+
+        System.out.println("============ VENDING MACHINE SERVICE LLD - END =========");
+        /*VendingMachine LLD END*/
 
 
     }

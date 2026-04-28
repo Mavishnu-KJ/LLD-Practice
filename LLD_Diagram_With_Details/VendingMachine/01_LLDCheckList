@@ -1,0 +1,63 @@
+A. PROBLEM STATEMENT
+
+Design Low-Level Design for Vending Machine.
+
+Requirements:
+
+Users can select a product and insert money (coins/notes).
+Machine should display available products with their prices.
+Machine should accept money, calculate change, and dispense the selected product.
+Support multiple products with different prices.
+Handle cases like insufficient money, out of stock, and exact change.
+Support basic operations: Insert coin, Select product, Dispense item, Return change.
+
+Constraints:
+
+In-memory implementation is acceptable.
+Focus on core transaction flow.
+Support multiple denominations of coins/notes.
+
+Edge Cases:
+
+Insufficient balance.
+Product out of stock.
+User cancels the transaction.
+Machine has no change left.
+
+B. HAPPY PATH STORY
+
+=> Rahul approaches a Vending Machine. He sees "Coke" priced at ₹25 and "Water" at ₹15.
+=> He inserts a ₹50 note. He selects "Coke".
+=> The machine accepts the money, dispenses a Coke bottle, and returns ₹25 as change.
+=> Later, another user inserts ₹10 for a ₹15 Water bottle.
+=> The machine shows "Insufficient balance" and returns the ₹10.
+=> This covers: Money insertion, product selection, validation, dispensing, and change return.
+
+C. 6 MANDATORY STEPS FOR LLD DESIGN
+
+1. Clarify requirements
+
+=> Functional: Insert money, select product, dispense item + change, show inventory.
+=> Non-Functional: Accurate transaction handling, handle multiple coin denominations.
+=> Assumptions: Single currency (₹), simple products, no card payment.
+=> Edge Cases: Insufficient funds, out of stock, cancel transaction, no change available.
+
+2. Identify entities and relationships
+
+=> Main entities: VendingMachine, Product, Inventory, Coin, Transaction
+=> Key relationships :
+VendingMachine has Inventory of Products
+Transaction tracks inserted money and selected product
+
+3. Design classes and method signatures
+
+4. Create class diagrams
+
+5. Explain the LLD diagram verbally
+
+6. Discuss trade-offs and alternatives
+
+D. COMPLETE CODE IMPLEMENTATION
+
+E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWER (WITH ANSWER)
+
