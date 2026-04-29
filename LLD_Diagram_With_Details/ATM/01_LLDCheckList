@@ -1,0 +1,93 @@
+A. PROBLEM STATEMENT
+
+Design Low-Level Design for ATM Machine.
+
+Requirements:
+
+User inserts card and enters PIN.
+User can check balance, withdraw money, deposit money, and change PIN.
+ATM should validate card and PIN.
+Handle insufficient balance, invalid PIN (max 3 attempts), and card blocked scenarios.
+Support multiple account types (Savings, Current).
+Maintain transaction logs.
+
+Constraints:
+
+In-memory implementation is acceptable.
+Focus on core ATM operations and security.
+
+Edge Cases:
+
+Wrong PIN (3 attempts → card blocked).
+Insufficient balance.
+ATM has insufficient cash.
+Transaction timeout / card not removed.
+
+B. HAPPY PATH STORY
+
+=> Rahul inserts his Debit Card into the ATM.
+=> He enters the correct PIN.
+=> He selects "Withdraw" → ₹5000.
+=> The ATM checks balance, dispenses cash, updates the account, and prints a receipt.
+=> He removes his card and leaves.
+=> Later, another user enters the wrong PIN three times — the ATM retains the card and shows "Card Blocked".
+=> This covers: Card insertion, PIN validation, transaction flow, and security.
+
+C. MANDATORY STEPS FOR LLD DESIGN
+
+1. Clarify requirements
+
+=> Functional: Insert card, validate PIN, check balance, withdraw, deposit, change PIN.
+=> Non-Functional: Secure PIN handling, proper state management, transaction atomicity.
+=> Assumptions: Single ATM, mocked bank server, simple cash dispensing.
+=> Edge Cases: Wrong PIN, insufficient balance, card blocked, ATM cash low.
+
+2. Identify entities and relationships
+
+=> Main entities: ATM, Card, Account, Transaction, ATMState
+=> Key relationships :
+ATM has current state and current card.
+Card belongs to one Account.
+Transaction records every operation.
+
+3. Design classes and method signatures
+
+4. Create class diagrams
+
+5. Explain LLD diagram verbally
+
+=> I used the State Design Pattern for the ATM.
+=> The ATM can be in different states (Idle, CardInserted, PINVerified, etc.)
+=> Each state handles only valid operations.
+=> This makes the code clean and extensible.
+=> Account and Card are separate entities.
+=> All transactions are logged.
+
+6. Discuss trade-offs and alternatives
+
+=> State Pattern vs simple if-else: State pattern is cleaner for many states.
+=> In-memory vs real bank API: For LLD we mock bank.
+=> Can extend with Observer for notifications or Command pattern for transactions.
+
+D. COMPLETE CODE IMPLEMENTATION
+
+E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWER (WITH ANSWER)
+
+Q1. Why did you use State Pattern?
+Answer: Because ATM has multiple states with different valid operations.
+State pattern avoids large if-else blocks and makes it extensible.
+
+Q2. How do you handle 3 wrong PIN attempts?
+Answer: We can add attempt counter in CardInsertedState. After 3 failures, call blockCard().
+
+Q3. How would you integrate with real bank?
+Answer: Replace in-memory Account with a BankService interface that communicates via API.
+
+
+
+
+
+
+
+
+

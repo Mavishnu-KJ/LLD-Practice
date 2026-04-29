@@ -1,0 +1,142 @@
+@startuml
+class lld.atm.Transaction {
+- String transactionId
+- TransactionType transactionType
+- LocalDateTime timeStamp
+- double amount
+- long transactionCounter
++ String toString()
+}
+
+
+class lld.atm.Account {
+- String accountNumber
+- double balance
++ String getAccountNumber()
++ double getBalance()
++ boolean withdraw(double)
++ void deposit(double)
+}
+
+
+enum lld.atm.TransactionType {
++  BALANCE_CHECK
++  WITHDRAW
++  DEPOSIT
+}
+
+class lld.atm.PINVerifiedState {
+- ATM atm
++ void insertCard(Card)
++ void enterPin(String)
++ void selectOperation(TransactionType)
++ void withdraw(double)
++ void deposit(double)
++ void checkBalance()
++ void ejectCard()
+}
+
+
+interface lld.atm.ATMState {
+~ void insertCard(Card)
+~ void enterPin(String)
+~ void selectOperation(TransactionType)
+~ void withdraw(double)
+~ void deposit(double)
+~ void checkBalance()
+~ void ejectCard()
+}
+
+class lld.atm.Card {
+- String cardNumber
+- String accountNumber
+- String pin
+- boolean isBlocked
++ String getCardNumber()
++ String getAccountNumber()
++ boolean isBlocked()
++ boolean validatePin(String)
++ void blockCard()
+}
+
+
+class lld.atm.IdleState {
+- ATM atm
++ void insertCard(Card)
++ void enterPin(String)
++ void selectOperation(TransactionType)
++ void withdraw(double)
++ void deposit(double)
++ void checkBalance()
++ void ejectCard()
+}
+
+
+class lld.atm.ATM {
+- ATMState currentState
+- Card currentCard
+- Account currentAccount
+- List<Transaction> transactionList
++ void setState(ATMState)
++ void setCurrentCard(Card)
++ void setCurrentAccount(Account)
++ void insertCard(Card)
++ void enterPin(String)
++ void selectOperation(TransactionType)
++ void withdraw(double)
++ void deposit(double)
++ void checkBalance()
++ void ejectCard()
++ void addTransaction(Transaction)
++ void printTransactions()
++ ATMState getCurrentState()
++ Card getCurrentCard()
++ Account getCurrentAccount()
+}
+
+
+class lld.atm.CardInsertedState {
+- ATM atm
++ void insertCard(Card)
++ void enterPin(String)
++ void selectOperation(TransactionType)
++ void withdraw(double)
++ void deposit(double)
++ void checkBalance()
++ void ejectCard()
+}
+
+
+
+'Arrows and relationships
+skinparam nodesep 60;
+skinparam ranksep 70;
+skinparam shadowing false;
+skinparam monochrome true;
+skinparam classAttributeIconSize 0;
+
+' Main relationship (Not a strong composition)
+ATM "1" o-- "1" ATMState : has current state
+
+' Association
+ATM --> Card : has current
+ATM --> Account : has current
+ATM --> Transaction : logs
+
+' Note
+note right of ATM
+  State Pattern Used
+  • IdleState
+  • CardInsertedState
+  • PINVerifiedState
+end note
+
+'Inheritance (IS-A RELATIONSHIP)
+ATMState <|.. IdleState : implements
+ATMState <|.. CardInsertedState : implements
+ATMState <|.. PINVerifiedState : implements
+
+'Enum usages
+Transaction ..> TransactionType : uses
+
+@enduml

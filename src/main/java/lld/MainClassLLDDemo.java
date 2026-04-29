@@ -1,5 +1,8 @@
 package lld;
 
+import lld.atm.ATM;
+import lld.atm.Card;
+import lld.atm.TransactionType;
 import lld.bookmyshow.*;
 import lld.cabbooking.*;
 import lld.elevatorcontroller.Direction;
@@ -15,8 +18,8 @@ import lld.splitwise.SplitType;
 import lld.splitwise.SplitwiseService;
 import lld.splitwise.User;
 import lld.tinyurl.TinyUrlService;
-import lld.VendingMachine.Coin;
-import lld.VendingMachine.VendingMachine;
+import lld.vendingmachine.Coin;
+import lld.vendingmachine.VendingMachine;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,6 +39,7 @@ public class MainClassLLDDemo {
         SnakeAndLadderGame snakeAndLadderGame;
         ElevatorController elevatorController;
         VendingMachine VendingMachine = new VendingMachine();
+        ATM atm = new ATM();
 
         /*ParkingLot LLD START*/
         System.out.println("============ PARKING LOT LLD - START =========");
@@ -273,6 +277,19 @@ public class MainClassLLDDemo {
         System.out.println("============ VENDING MACHINE SERVICE LLD - END =========");
         /*VendingMachine LLD END*/
 
+        /*ATM LLD START*/
+        System.out.println("============ ATM LLD - START =========");
+
+        Card rahulCard = new Card("123456789", "ACC001", "1234");
+        atm.insertCard(rahulCard);
+        atm.enterPin("1234");
+        atm.selectOperation(TransactionType.BALANCE_CHECK);
+        atm.withdraw(5000);
+        atm.checkBalance();
+        atm.ejectCard();
+
+        System.out.println("============ ATM LLD - END =========");
+        /*ATM LLD END*/
 
     }
 }

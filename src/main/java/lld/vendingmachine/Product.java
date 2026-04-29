@@ -1,4 +1,4 @@
-package lld.VendingMachine;
+package lld.vendingmachine;
 
 public class Product {
 
