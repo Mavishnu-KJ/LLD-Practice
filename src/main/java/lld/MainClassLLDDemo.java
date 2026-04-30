@@ -7,6 +7,9 @@ import lld.bookmyshow.*;
 import lld.cabbooking.*;
 import lld.elevatorcontroller.Direction;
 import lld.elevatorcontroller.ElevatorController;
+import lld.librarymanagementsystem.Book;
+import lld.librarymanagementsystem.LibraryManagementService;
+import lld.librarymanagementsystem.Member;
 import lld.parkinglot.ParkingLot;
 import lld.parkinglot.Ticket;
 import lld.parkinglot.Vehicle;
@@ -26,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MainClassLLDDemo {
 
@@ -40,6 +44,7 @@ public class MainClassLLDDemo {
         ElevatorController elevatorController;
         VendingMachine VendingMachine = new VendingMachine();
         ATM atm = new ATM();
+        LibraryManagementService libraryManagementService = new LibraryManagementService();
 
         /*ParkingLot LLD START*/
         System.out.println("============ PARKING LOT LLD - START =========");
@@ -290,6 +295,37 @@ public class MainClassLLDDemo {
 
         System.out.println("============ ATM LLD - END =========");
         /*ATM LLD END*/
+
+        /*LibraryManagementSystem  LLD START*/
+        System.out.println("============ LIBRARY MANAGEMENT SYSTEM LLD - START =========");
+
+        //Add books
+        libraryManagementService.addBook(new Book("B001", "Clean Code", "Robert Martin", "Programming", 3));
+        libraryManagementService.addBook(new Book("B002", "Atomic Habits", "James Clear", "Self Help", 5));
+        libraryManagementService.addBook(new Book("B003", "Master Blaster", "Twin Rose", "Cricket", 1));
+
+        //Register Members
+        Member Dhoni = new Member("M001", "Dhoni");
+        libraryManagementService.registerMember(Dhoni);
+        Member Kohli = new Member("M002", "Kohli");
+        libraryManagementService.registerMember(Kohli);
+
+        //Issue Book
+        libraryManagementService.issueBook("M001", "Master Blaster");
+        libraryManagementService.issueBook("M002", "Master Blaster"); //Gets out of stock message
+
+        // Return Book (with delay)
+        try {
+            Thread.sleep(100);
+            //TimeUnit.DAYS.sleep(20); //To make actual delay, but it wont execute for 20 days
+        } catch (Exception ignored) {
+
+        }
+        libraryManagementService.returnBook("M001", "Master Blaster");
+
+        System.out.println("============ LIBRARY MANAGEMENT SYSTEM LLD - END =========");
+        /*LibraryManagementSystem LLD END*/
+
 
     }
 }

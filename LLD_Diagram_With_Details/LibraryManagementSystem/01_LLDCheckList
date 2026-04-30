@@ -1,0 +1,83 @@
+A. PROBLEM STATEMENT
+
+Design Low-Level Design for Library Management System.
+
+Requirements:
+
+Users (Members) can register, search books, issue books, and return books.
+Librarians can add/remove books, manage members, and track issued books.
+Support book search by title, author, or category.
+Handle due dates, fines for late returns.
+Prevent issuing already issued books.
+Maintain transaction history.
+
+Constraints:
+
+In-memory implementation is acceptable.
+Support multiple members and books.
+
+Edge Cases:
+
+Book already issued.
+Member has reached max borrow limit.
+Late return (fine calculation).
+Book not found.
+
+B. HAPPY PATH STORY
+
+=> Rahul registers as a member in the library.
+=> He searches for "Clean Code" by Robert Martin.
+=> The system shows available copies.
+=> He issues the book — the system records the issue date and due date (15 days later).
+=> After 20 days, he returns the book.
+=> The system calculates a late fine of ₹50 and marks the book as available again.
+=> Meanwhile, another member tries to issue the same book but gets "Book is already issued".
+=> This covers: Member registration, book search, issue, return, and fine calculation.
+
+C. 6 MANDATORY STEPS FOR LLD DESIGN
+
+1. Clarify requirements
+
+=> Functional: Register member, add book, search book, issue book, return book, calculate fine.
+=> Non-Functional: Fast search, track due dates, prevent invalid operations.
+=> Assumptions: Single library, simple fine (₹10/day), max 5 books per member.
+=> Edge Cases: Book not available, max limit reached, late return, invalid member.
+
+2. Identify entities and relationships
+
+=> Main entities : Library, Member, Book, BookItem (copy), IssueRecord
+=> Key relationships :
+Library has Books and Members.
+Book has multiple copies (BookItem).
+IssueRecord links Member + BookItem + dates.
+
+3. Design classes and method signatures
+
+4. Create class diagrams
+
+5. Explain LLD diagram verbally
+
+=> LibraryManagementService is the main class
+=> I used Book as the catalog and BookItem as physical copy.
+=> IssueRecord tracks who borrowed what and when.
+=> Fine calculation is done at return time.
+=> This design makes it easy to track availability and history.
+
+6. Discuss trade-offs and alternatives
+
+=> Separate Book and BookItem vs single class: Used two classes for better real-world modeling (multiple copies).
+=> In-memory Maps vs Database: Fine for LLD.
+=> Can extend with Reservation system or Notification service.
+
+D. COMPLETE CODE IMPLEMENTATION
+
+E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWER (WITH ANSWER)
+
+Q1. How do you handle multiple copies of the same book?
+Answer: I used Book (catalog) and BookItem (physical copy). This allows multiple copies with individual status.
+
+Q2. How do you calculate fine?
+Answer: In IssueRecord, compare returnDate with dueDate and charge ₹10 per day.
+
+Q3. How would you scale this for a large library?
+Answer: Move to a database with proper indexing on book title and member ID. Use Redis for caching frequently searched books.

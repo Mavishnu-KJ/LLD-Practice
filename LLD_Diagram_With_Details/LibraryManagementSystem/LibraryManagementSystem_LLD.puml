@@ -1,0 +1,83 @@
+@startuml
+class lld.librarymanagementsystem.Member {
+- String memberId
+- String name
+- List<IssueRecord> issueRecordList
++ String getMemberId()
++ String getName()
++ List<IssueRecord> getIssueRecordList()
++ void addBorrowedBook(IssueRecord)
+}
+
+
+class lld.librarymanagementsystem.LibraryManagementService {
+- Map<String,Book> bookList
+- Map<String,Member> memberList
++ void addBook(Book)
++ void registerMember(Member)
++ Book searchBook(String)
++ IssueRecord issueBook(String,String)
++ void returnBook(String,String)
+}
+
+
+class lld.librarymanagementsystem.BookItem {
+- String barCode
+- boolean isIssued
++ String getBarCode()
++ boolean isIssued()
++ void issue()
++ void returnBook()
+}
+
+
+class lld.librarymanagementsystem.IssueRecord {
+- String issueId
+- Member member
+- BookItem bookItem
+- LocalDate issueDate
+- LocalDate dueDate
+- LocalDate returnDate
++ String getIssueId()
++ Member getMember()
++ BookItem getBookItem()
++ double calculateFine()
++ void returnBook()
+}
+
+
+class lld.librarymanagementsystem.Book {
+- String bookId
+- String title
+- String author
+- String category
+- List<BookItem> bookCopyList
++ String getBookId()
++ String getTitle()
++ String getAuthor()
++ String getCategory()
++ List<BookItem> getBookCopyList()
+}
+
+'Arrows and relationships
+
+skinparam nodesep 60;
+skinparam ranksep 70;
+skinparam shadowing false;
+skinparam monochrome true;
+skinparam classAttributeIconSize 0;
+
+LibraryManagementService "1" o-- "many" Book : manages
+LibraryManagementService "1" o-- "many" Member : manages
+
+Book "1" *-- "many" BookItem : has copies
+
+IssueRecord "1" --> "1" Member : belongs to
+IssueRecord "1" --> "1" BookItem : for
+
+note right of LibraryManagementService
+    bookList : title -> Book
+    memberList : name -> Member
+end note
+
+@enduml
