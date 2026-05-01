@@ -1,0 +1,93 @@
+A. PROBLEM STATEMENT
+
+Design Low-Level Design for Chess Game.
+
+Requirements:
+
+Support standard 8x8 chess board.
+Support all standard chess pieces (King, Queen, Rook, Bishop, Knight, Pawn).
+Players take alternate turns (White starts first).
+Validate legal moves according to chess rules (including special moves: castling, en passant, promotion).
+Detect check, checkmate, and stalemate.
+Support basic undo (optional for LLD).
+
+Constraints:
+
+In-memory implementation.
+Focus on core move validation and game state.
+
+Edge Cases:
+
+Invalid move.
+Piece blocked by own piece.
+King in check.
+Pawn promotion.
+Castling conditions.
+
+B. HAPPY PATH STORY
+
+=> Two players start a new game. White moves first and plays e4.
+=> Black responds with e5.
+=> White develops the Knight to f3.
+=> The game continues with normal moves.
+=> Later, White puts Black’s King in check. Black moves the King to safety.
+=> Finally, White delivers checkmate, and the game ends with White winning.
+=> This covers: Board setup, piece movement, turn management, and win condition.
+
+C. 6 MANDATORY STEPS FOR LLD DESIGN
+
+1. Clarify requirements
+
+=> Functional: Initialize board, make moves, validate rules, detect check/checkmate.
+=> Non-Functional: Efficient move validation.
+=> Assumptions: 2 players, standard rules, no AI (human vs human).
+=> Edge Cases: Castling, en passant, pawn promotion, pinned pieces.
+
+2. Identify entities and relationships
+
+=> Main entities : ChessGame, Board, Square, Piece, Player
+=> Key relationships :
+Board has 64 Squares.
+Square can hold one Piece.
+Piece belongs to one Player (color).
+
+3. Design classes and method signatures
+
+4. Create class diagrams
+
+5. Explain LLD diagram verbally
+
+=> ChessGame is the main class that holds the Board and current turn
+=> Each Piece has its own isValidMove() method (polymorphism)
+=> The Board validates if the path is clear and if the move puts the King in check
+=> This design makes adding new piece rules easy
+
+6. Discuss trade-offs and alternatives
+
+=> Piece-specific validation vs single validator: Used polymorphism for cleaner code
+=> 2D array for board vs Map: 2D array is faster for chess.
+=> Can extend with undo using Memento pattern or move history.
+
+D. COMPLETE CODE IMPLEMENTATION
+
+E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWER (WITH ANSWER)
+
+Q1. How do you validate complex moves like castling?
+Answer: Add special logic in King.isValidMove() and check conditions (no pieces in between, king not in check, etc.).
+
+Q2. How do you detect check/checkmate?
+Answer: After every move, check if the opponent's King is under attack and has no valid escape moves.
+
+Q3. How would you support undo move?
+Answer: Maintain a stack of moves (Memento pattern) to revert board state.
+
+
+
+
+
+
+
+
+
+
+

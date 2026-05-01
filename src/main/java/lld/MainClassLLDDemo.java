@@ -5,6 +5,8 @@ import lld.atm.Card;
 import lld.atm.TransactionType;
 import lld.bookmyshow.*;
 import lld.cabbooking.*;
+import lld.chessgame.ChessGame;
+import lld.chessgame.Position;
 import lld.elevatorcontroller.Direction;
 import lld.elevatorcontroller.ElevatorController;
 import lld.librarymanagementsystem.Book;
@@ -45,6 +47,7 @@ public class MainClassLLDDemo {
         VendingMachine VendingMachine = new VendingMachine();
         ATM atm = new ATM();
         LibraryManagementService libraryManagementService = new LibraryManagementService();
+        ChessGame chessGame = new ChessGame();
 
         /*ParkingLot LLD START*/
         System.out.println("============ PARKING LOT LLD - START =========");
@@ -325,6 +328,20 @@ public class MainClassLLDDemo {
 
         System.out.println("============ LIBRARY MANAGEMENT SYSTEM LLD - END =========");
         /*LibraryManagementSystem LLD END*/
+
+        /*ChessGame  LLD START*/
+        System.out.println("============ CHESS GAME LLD - START =========");
+
+        System.out.println("Chess Game Started!");
+        //Example move (e2 to e4)
+        Position from = new Position(2, 4);
+        Position to = new Position(3, 4);
+        boolean success = chessGame.makeMove(from, to);
+
+        System.out.println("Move successful: " + success);
+
+        System.out.println("============ CHESS GAME LLD - END =========");
+        /*ChessGame LLD END*/
 
 
     }

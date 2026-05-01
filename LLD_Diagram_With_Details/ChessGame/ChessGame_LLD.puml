@@ -1,0 +1,105 @@
+@startuml
+class Pawn {
++ boolean isValidMove(Position,Position,Board)
+}
+
+class ChessGame {
+- Board board
+- PieceColor currentTurn
+- boolean gameOver
++ boolean makeMove(Position,Position)
++ boolean isGameOver()
+}
+
+
+enum PieceColor {
++  BLACK
++  WHITE
+}
+
+class Board {
+- Piece[][] squares
+- void initializeBoard()
++ Piece getPiece(Position)
++ void movePiece(Position,Position)
++ boolean isPathClear(Position,Position)
+}
+
+
+class Knight {
++ boolean isValidMove(Position,Position,Board)
+}
+
+abstract class Piece {
+# PieceColor pieceColor
+# PieceType pieceType
++ PieceColor getPieceColor()
++ PieceType getPieceType()
++ {abstract}boolean isValidMove(Position,Position,Board)
+}
+
+
+enum PieceType {
++  KING
++  QUEEN
++  BISHOP
++  KNIGHT
++  ROOK
++  PAWN
+}
+
+class Position {
+~ int row
+}
+
+class Bishop {
++ boolean isValidMove(Position,Position,Board)
+}
+
+class Queen {
++ boolean isValidMove(Position,Position,Board)
+- boolean isStraightMove(Position,Position)
+- boolean isDiagonalMove(Position,Position)
+}
+
+class King {
++ boolean isValidMove(Position,Position,Board)
+}
+
+class Rook {
++ boolean isValidMove(Position,Position,Board)
+}
+
+
+'Arrows and relationships
+skinparam nodesep 60;
+skinparam ranksep 70;
+skinparam shadowing false;
+skinparam monochrome true;
+skinparam classAttributeIconSize 0;
+
+' Main composition
+ChessGame "1" *-- "1" Board : has
+
+' Board holds pieces
+Board "1" o-- "64" Piece : contains
+
+' Piece knows its color and type
+Piece --> PieceColor : color
+Piece --> PieceType : type
+
+' Position is used by Board and Pieces
+Board ..> Position : uses
+Piece ..> Position : uses
+
+
+'Inheritance (IS-A relationship)
+Piece <|-- Pawn
+Piece <|-- Knight
+Piece <|-- Bishop
+Piece <|-- Queen
+Piece <|-- King
+Piece <|-- Rook
+
+
+@enduml
