@@ -16,6 +16,8 @@ import lld.parkinglot.ParkingLot;
 import lld.parkinglot.Ticket;
 import lld.parkinglot.Vehicle;
 import lld.parkinglot.VehicleType;
+import lld.restaurantreservationsystem.Restaurant;
+import lld.restaurantreservationsystem.RestaurantReservationService;
 import lld.snakeandladdergame.Player;
 import lld.snakeandladdergame.SnakeAndLadderGame;
 import lld.splitwise.Group;
@@ -29,6 +31,7 @@ import lld.vendingmachine.VendingMachine;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +51,7 @@ public class MainClassLLDDemo {
         ATM atm = new ATM();
         LibraryManagementService libraryManagementService = new LibraryManagementService();
         ChessGame chessGame = new ChessGame();
+        RestaurantReservationService restaurantReservationService = new RestaurantReservationService();
 
         /*ParkingLot LLD START*/
         System.out.println("============ PARKING LOT LLD - START =========");
@@ -342,6 +346,27 @@ public class MainClassLLDDemo {
 
         System.out.println("============ CHESS GAME LLD - END =========");
         /*ChessGame LLD END*/
+
+        /*RestaurantReservationService  LLD START*/
+        System.out.println("============ RESTAURANT RESERVATION SERVICE LLD - START =========");
+
+        //Admin API - Add restaurant
+        Restaurant meghana = new Restaurant("R001", "Meghana Foods", "Bangalore", 1);
+        restaurantReservationService.addRestaurant(meghana);
+
+        //User
+        lld.restaurantreservationsystem.User shreyas = new  lld.restaurantreservationsystem.User("U001", "Shreyas");
+
+        LocalDateTime slot = LocalDateTime.of(2026, 5, 2, 20, 0);
+        restaurantReservationService.bookTable(shreyas, "Meghana Foods", slot, 4);
+
+        //Try booking same slot again
+        lld.restaurantreservationsystem.User jadeja = new  lld.restaurantreservationsystem.User("U001", "Jadeja");
+        restaurantReservationService.bookTable(jadeja, "Meghana Foods", slot, 2);
+
+        System.out.println("============ RESTAURANT RESERVATION SERVICE LLD - END =========");
+        /*RestaurantReservationService LLD END*/
+
 
 
     }

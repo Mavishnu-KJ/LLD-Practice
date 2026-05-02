@@ -1,0 +1,81 @@
+A. PROBLEM STATEMENT
+
+Design Low-Level Design for Restaurant Reservation System (like Table Booking).
+
+Requirements:
+
+Users can search restaurants by location, cuisine, or rating.
+Users can view available tables and time slots.
+Users can make, modify, or cancel reservations.
+Restaurant admins can manage tables, menus, and availability.
+Handle concurrency (multiple users booking the same table at the same time).
+Support waitlist if tables are full.
+
+Constraints:
+
+In-memory implementation is acceptable.
+Focus on core reservation flow.
+
+Edge Cases:
+
+Table already booked at the same time slot.
+Reservation cancellation with refund policy.
+No available tables.
+Overbooking prevention.
+
+B. HAPPY PATH STORY
+
+=> Rahul wants to book a table for 4 people at "Meghana Foods" for tonight at 8 PM.
+=> He searches by location (Bangalore), selects the restaurant, views available slots, and books a table.
+=> The system confirms the reservation and sends a booking ID.
+=> Later, his friend tries to book the same slot but gets "Table not available".
+=> Sachin cancels the reservation 2 hours before, and the table becomes available again.
+=> This covers: Search, availability check, booking, concurrency, and cancellation.
+
+C. 6 MANDATORY STEPS FOR LLD DESIGN
+
+1. Clarify requirements
+
+=> Functional: Search restaurants, view tables/slots, make/cancel reservation, manage tables (admin).
+=> Non-Functional: Fast availability check, concurrency safety.
+=> Assumptions: Simple time slots, single city for LLD.
+=> Edge Cases: Double booking, cancellation policy, no tables available.
+
+2. Identify entities and relationships
+
+=> Main entities : Restaurant, Table, Reservation, User, TimeSlot
+=> Key relationships :
+Restaurant has multiple Tables.
+Table has multiple TimeSlots.
+Reservation links User + Table + TimeSlot.
+
+3. Design classes and method signatures
+
+4. Create class diagrams
+
+5. Explain LLD diagram verbally
+
+=> RestaurantReservationService is the main facade.
+=> Each Restaurant maintains a map of tables and their availability.
+=> When a user books, we use synchronized block to prevent race conditions.
+=> Reservation class tracks the booking details.
+=> This design allows easy extension for waitlist or multiple restaurants.
+
+6. Discuss trade-offs and alternatives
+
+=> Synchronized method vs Redis lock for concurrency.
+=> In-memory Map vs Database with proper indexing.
+=> Can use Strategy pattern for different pricing or cancellation policies.
+
+D. COMPLETE CODE IMPLEMENTATION
+
+E. POSSIBLE FOLLOW-UP QUESTIONS FROM INTERVIEWER (WITH ANSWER)
+
+Q1. How do you handle concurrency for the same table?
+Answer: Used synchronized on bookTable(). In production, use Redis lock or database row locking.
+
+Q2. How would you support different time slots and table types?
+Answer: Extend Table with type (AC/Non-AC) and use a more sophisticated availability map (e.g., time-slot based).
+
+Q3. How do you implement waitlist?
+Answer: Maintain a priority queue of pending reservations and notify when a table becomes available.

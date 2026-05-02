@@ -1,0 +1,86 @@
+@startuml
+class lld.restaurantreservationsystem.RestaurantReservationService {
+- Map<String,Restaurant> restaurantMap
+- Map<String,Reservation> reservationMap
++ void addRestaurant(Restaurant)
++ Reservation bookTable(User,String,LocalDateTime,int)
++ void cancelReservation(String)
+}
+
+
+enum lld.restaurantreservationsystem.TableStatus {
++  AVAILABLE
++  RESERVED
++  OCCUPIED
+}
+
+class lld.restaurantreservationsystem.Table {
+- int tableNumber
+- int tableCapacity
+- Map<LocalDateTime,TableStatus> availabilityMap
++ int getTableNumber()
++ int getTableCapacity()
++ Map<LocalDateTime,TableStatus> getAvailabilityMap()
++ boolean isAvailable(LocalDateTime)
++ void reserve(LocalDateTime)
++ void release(LocalDateTime)
+}
+
+
+class lld.restaurantreservationsystem.Restaurant {
+- String restaurantId
+- String restaurantName
+- String location
+- List<Table> tableList
++ String getRestaurantId()
++ String getRestaurantName()
++ String getLocation()
++ List<Table> getTableList()
+}
+
+
+class lld.restaurantreservationsystem.User {
+- String userId
+- String username
++ String getUserId()
++ String getUsername()
+}
+
+
+class lld.restaurantreservationsystem.Reservation {
+- String reservationId
+- User user
+- Restaurant restaurant
+- Table table
+- LocalDateTime timeSlot
+- int numberOfPeople
++ String getReservationId()
++ User getUser()
++ Restaurant getRestaurant()
++ Table getTable()
++ LocalDateTime getTimeSlot()
++ int getNumberOfPeople()
+}
+
+'Arrows and relationships
+
+skinparam nodesep 60;
+skinparam ranksep 70;
+skinparam shadowing false;
+skinparam monochrome true;
+skinparam classAttributeIconSize 0;
+
+RestaurantReservationService "1" o-- "many" Restaurant : manages
+RestaurantReservationService "1" o-- "many" Reservation : handles
+
+Restaurant "1" *-- "many" Table : has tables
+
+Reservation "1" --> "1" User : by
+Reservation "1" --> "1" Restaurant : at
+Reservation "1" --> "1" Table : for
+
+'Enum usages
+Table --> TableStatus : uses
+
+
+@enduml
