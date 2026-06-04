@@ -11,7 +11,7 @@ A comprehensive collection of **Low-Level Design (LLD)** solutions built with **
 
 ## Note
 
-- The implementation logics are implemented at high level for better understanding only
+- The implementation logics are at high level for better understanding only
 - The main goal is understanding the architecture design
 ---
 
