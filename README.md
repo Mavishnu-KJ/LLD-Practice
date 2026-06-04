@@ -98,4 +98,4 @@ mvn clean compile
 
 ## Related Projects
 - Full Spring Boot application: [Employee Management System](https://github.com/Mavishnu-KJ/employeeManagementSystem)
-- Payment Wallet System : [payment-wallet-system](github.com/Mavishnu-KJ/payment-wallet-system)
+- Payment Wallet System : [payment-wallet-system](https://github.com/Mavishnu-KJ/payment-wallet-system)
