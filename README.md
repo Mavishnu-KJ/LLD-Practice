@@ -40,18 +40,18 @@ This repository serves as my **personal LLD mastery hub**. Each design focuses o
 
 | # | System Design | Package | Key Features | Status |
 |---|---------------|---------|--------------|--------|
-| 1 | **Parking Lot System** | `lld.parkinglot` | Multi-level, vehicle-spot compatibility, fee calculation, ticket management | ✅ Complete |
-| 2 | **Tiny URL / URL Shortener** | `lld.tinyurl` | Base62 encoding, collision handling, expiration, analytics | ✅ Complete |
-| 3 | **Splitwise / Expense Sharing** | `lld.splitwise` | Group expenses, different split strategies, balance settlement | ✅ Complete |
-| 4 | **BookMyShow / Movie Ticket Booking** | `lld.bookmyshow` | Show seating, booking lock, payment integration points | ✅ Complete |
-| 5 | **Cab Booking / Ola-Uber** | `lld.cabbooking` | Driver-rider matching, real-time status, pricing strategy | ✅ Complete |
-| 6 | **Snake and Ladder Game** | `lld.snakeandladder` | Multi-player, board design, dice strategy | ✅ Complete |
-| 7 | **Elevator System** | `lld.elevator` | Multiple elevators, scheduling algorithms, request handling | ✅ Complete |
-| 8 | **Vending Machine** | `lld.vendingmachine` | State machine, inventory management, transaction handling | ✅ Complete |
-| 9 | **ATM Machine** | `lld.atm` | Card authentication, transaction types, state management | ✅ Complete |
-| 10 | **Library Management System** | `lld.library` | Book issuance, fine calculation, user management | ✅ Complete |
-| 11 | **Chess Game** | `lld.chess` | Piece movement rules, check/checkmate logic, undo support | ✅ Complete |
-| 12 | **Restaurant Reservation System** | `lld.restaurant` | Table management, reservation slots, waitlist | ✅ Complete |
+| 1 | **Parking Lot System** | [lld.parkinglot](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/ParkingLot) | Multi-level, vehicle-spot compatibility, fee calculation, ticket management | ✅ Complete |
+| 2 | **Tiny URL / URL Shortener** | [lld.tinyurl](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/TinyUrl) | Base62 encoding, collision handling, expiration, analytics | ✅ Complete |
+| 3 | **Splitwise / Expense Sharing** | [lld.splitwise](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/Splitwise) | Group expenses, different split strategies, balance settlement | ✅ Complete |
+| 4 | **BookMyShow / Movie Ticket Booking** | [lld.bookmyshow](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/BookMyShow) | Show seating, booking lock, payment integration points | ✅ Complete |
+| 5 | **Cab Booking / Ola-Uber** | [lld.cabbooking](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/CabBooking) | Driver-rider matching, real-time status, pricing strategy | ✅ Complete |
+| 6 | **Snake and Ladder Game** | [lld.snakeandladder](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/SnakeAndLadderGame) | Multi-player, board design, dice strategy | ✅ Complete |
+| 7 | **Elevator System** | [lld.elevator](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/ElevatorController) | Multiple elevators, scheduling algorithms, request handling | ✅ Complete |
+| 8 | **Vending Machine** | [lld.vendingmachine](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/VendingMachine) | State machine, inventory management, transaction handling | ✅ Complete |
+| 9 | **ATM Machine** | [lld.atm](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/ATM) | Card authentication, transaction types, state management | ✅ Complete |
+| 10 | **Library Management System** | [lld.library](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/LibraryManagementSystem) | Book issuance, fine calculation, user management | ✅ Complete |
+| 11 | **Chess Game** | [lld.chess](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/ChessGame) | Piece movement rules, check/checkmate logic, undo support | ✅ Complete |
+| 12 | **Restaurant Reservation System** | [lld.restaurant](https://github.com/Mavishnu-KJ/LLD-Practice/tree/master/LLD_Diagram_With_Details/RestaurantReservationSystem) | Table management, reservation slots, waitlist | ✅ Complete |
 
 > Click on the package links in the code to explore each system.
 
