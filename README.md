@@ -5,6 +5,15 @@
 A comprehensive collection of **Low-Level Design (LLD)** solutions built with **clean code**, **SOLID principles**, **design patterns**, and **senior-level considerations** for system design interviews.
 
 ---
+## Main class for testing All LLDs
+
+[MainClassLLDDemo.java](https://github.com/Mavishnu-KJ/LLD-Practice/blob/master/src/main/java/lld/MainClassLLDDemo.java)
+
+## Note
+
+- The implementation logics are implemented at high level for better understanding only
+- The main goal is understanding the architecture design
+---
 
 ## 🎯 Purpose
 
@@ -49,8 +58,7 @@ This repository serves as my **personal LLD mastery hub**. Each design focuses o
 ---
 
 ## 📁 Project Structure
-
-```bash
+```base
 src/main/java/lld/
 ├── parkinglot/
 ├── tinyurl/
@@ -67,10 +75,12 @@ src/main/java/lld/
 
 Also includes:
 
-LLD_Diagram_With_Details/ → Class & Sequence diagrams
+LLD_Diagram_With_Details/ → PUML code, Class & Sequence diagrams, addition info
 
-🚀 How to Run
+```
 
+## 🚀 How to Run
+```
 # Clone the repo
 git clone https://github.com/Mavishnu-KJ/LLD-Practice.git
 
@@ -80,3 +90,12 @@ mvn clean compile
 
 # Run main class for testing all LLDs at once 
 
+[MainClassLLDDemo.java](https://github.com/Mavishnu-KJ/LLD-Practice/blob/master/src/main/java/lld/MainClassLLDDemo.java)
+```
+
+## Author
+- [Mavishnu KJ](http://www.linkedin.com/in/mavishnu-kj)
+
+## Related Projects
+- Full Spring Boot application: [Employee Management System](https://github.com/Mavishnu-KJ/employeeManagementSystem)
+- Payment Wallet System : [payment-wallet-system](github.com/Mavishnu-KJ/payment-wallet-system)
